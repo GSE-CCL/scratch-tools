@@ -25,6 +25,7 @@ Outputs:
 
 - -d: Output directory. Will save output to this directory, and create the directory if doesn’t exist.
 - -n: Name of the output JSON file, if only a single output file is desired. Otherwise, will save projects to individual JSON files.
+- -b: If downloading a list of studios, add this flag to save projects to subdirectories named for the studio ID.
 
 ## Examples
 

@@ -39,7 +39,7 @@ def download_project(id):
     r = requests.get(url)
 
     if r.status_code != 200:
-        raise RuntimeError("GET {0} failed with status code {1}".format(r.status_code, url))
+        print("GET {0} failed with status code {1}".format(r.status_code, url))
 
     project = ""
     try:
@@ -58,7 +58,7 @@ def download_project(id):
     return project
 
 
-def download_projects(ids, output_directory=os.getcwd(), file_name=None):
+def download_projects(ids, projects_to_studio, output_directory=os.getcwd(), file_name=None):
     """"Given project IDs, download the JSON files.
         :param ids: array-like collection of Scratch project IDs
         :param output_directory: directory for output
@@ -75,7 +75,12 @@ def download_projects(ids, output_directory=os.getcwd(), file_name=None):
             break
         
         if file_name is None:
-            with open("{0}/{1}.json".format(output_directory, id), "w") as f:
+            od = output_directory
+            if len(projects_to_studio) > 0:
+                od = "{0}/{1}".format(od, projects_to_studio[id])
+                helpers.make_dir(od)
+
+            with open("{0}/{1}.json".format(od, id), "w") as f:
                 json.dump(project, f)
         else:
             projects.append(project)
@@ -99,6 +104,7 @@ def get_arguments():
     # Arguments related to output
     parser.add_argument("-d", dest="output_directory", help="Output directory. Will save output to this directory, and create the directory if doesn’t exist.")
     parser.add_argument("-n", dest="output_name", help="Name of the output JSON file, if only a single output file is desired. Otherwise, will save projects to individual JSON files.")
+    parser.add_argument("-b", dest="studio_subdirectories", action="store_const", const=True, default=False, help="If downloading a list of studios, add this flag to save projects to subdirectories named for the studio ID.")
 
     return parser.parse_args()
 
@@ -119,6 +125,7 @@ def get_ids_from_file(filename):
 def get_project_ids(arguments):
     """Given input arguments, return a set of all the project IDs."""
     projects = list()
+    projects_to_studio = dict()
     if arguments.project is not None:
         projects = arguments.project
     elif arguments.studio is not None:
@@ -131,19 +138,23 @@ def get_project_ids(arguments):
         for s in arguments.studio_list:
             studios = get_ids_from_file(s)
             for studio in studios:
-                projects += get_projects_in_studio(studio)
+                studio_projects = get_projects_in_studio(studio)
+                projects += studio_projects
+                if arguments.studio_subdirectories:
+                    for p in studio_projects:
+                        projects_to_studio[p] = studio
 
-    return set(projects)
+    return set(projects), projects_to_studio
 
 
 def main():
     arguments = get_arguments()
-    projects = get_project_ids(arguments)
+    projects, projects_to_studio = get_project_ids(arguments)
 
     if arguments.output_directory is None:
-        download_projects(projects, file_name=arguments.output_name)
+        download_projects(projects, projects_to_studio, file_name=arguments.output_name)
     else:
-        download_projects(projects, output_directory=arguments.output_directory, file_name=arguments.output_name)
+        download_projects(projects, projects_to_studio, output_directory=arguments.output_directory, file_name=arguments.output_name)
 
 
 if __name__ == "__main__":
