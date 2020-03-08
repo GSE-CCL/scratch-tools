@@ -127,7 +127,8 @@ def get_project_ids(arguments):
     projects = list()
     projects_to_studio = dict()
     if arguments.project is not None:
-        projects = arguments.project
+        for p in arguments.project:
+            projects.append(helpers.get_id(p))
     elif arguments.studio is not None:
         for s in arguments.studio:
             projects += get_projects_in_studio(helpers.get_id(s))
