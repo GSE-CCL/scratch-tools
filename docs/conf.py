@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../ccl_scratch_scrape'))
 project = 'CCL Scratch Scrape'
 copyright = '2020, Creative Computing Lab'
 author = 'Creative Computing Lab'
-
+master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------
 
