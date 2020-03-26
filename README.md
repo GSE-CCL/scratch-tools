@@ -5,6 +5,8 @@ A Python package with which to scrape Scratch JSON files.
 
 Make sure you have Python 3.7 or higher. Then install the package by running ```pip install ccl-scratch-scrape```.
 
+Check it out on PyPI: [https://pypi.org/project/ccl-scratch-scrape/](https://pypi.org/project/ccl-scratch-scrape/).
+
 ## Documentation
 
 Read the documentation of the package [here](https://ccl-scratch-scrape.readthedocs.io/en/latest/).
