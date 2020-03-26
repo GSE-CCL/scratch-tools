@@ -1,4 +1,7 @@
 .vscode
 __pycache__
+build
+*.egg-info
+dist
 env
 gu18*
