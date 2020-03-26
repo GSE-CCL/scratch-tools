@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>CCL Scratch Scrape documentation &#8212; CCL Scratch Scrape  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-scrape">
+<span id="ccl-scratch-scrape-documentation"></span><h1>CCL Scratch Scrape documentation<a class="headerlink" href="#module-scrape" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="scrape.Scraper">
+<em class="property">class </em><code class="sig-prename descclassname">scrape.</code><code class="sig-name descname">Scraper</code><span class="sig-paren">(</span><em class="sig-param">studio_url=None</em>, <em class="sig-param">project_url=None</em><span class="sig-paren">)</span><a class="headerlink" href="#scrape.Scraper" title="Permalink to this definition">¶</a></dt>
+<dd><p>A scraper with which to scrape Scratch projects.</p>
+<p>Typical usage example:</p>
+<blockquote>
+<div><p>scraper = Scraper()
+project = scraper.download_project(555555555)</p>
+</div></blockquote>
+<dl class="method">
+<dt id="scrape.Scraper.download_project">
+<code class="sig-name descname">download_project</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#scrape.Scraper.download_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads an individual project JSON and returns it as a Python object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – An integer Scratch project ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary object representing the Scratch project JSON.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – An error occurred accessing the Scratch API, or
+    the project couldn’t be downloaded in/converted to JSON format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scrape.Scraper.download_projects">
+<code class="sig-name descname">download_projects</code><span class="sig-paren">(</span><em class="sig-param">ids</em>, <em class="sig-param">projects_to_studio</em>, <em class="sig-param">output_directory=None</em>, <em class="sig-param">file_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#scrape.Scraper.download_projects" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Given project IDs, download the JSON files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> – array-like collection of Scratch project IDs.</p></li>
+<li><p><strong>projects_to_studio</strong> – dictionary mapping project IDs to studio IDs.</p></li>
+<li><p><strong>output_directory</strong> (<em>str</em>) – directory for output; if not set,
+defaults to current working directory.</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – if set, combines projects into one JSON file with file_name;
+else creates a separate JSON file for each project.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scrape.Scraper.get_id">
+<code class="sig-name descname">get_id</code><span class="sig-paren">(</span><em class="sig-param">url</em><span class="sig-paren">)</span><a class="headerlink" href="#scrape.Scraper.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the integer ID from a string that may be a URL or an ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>url</strong> – The string representing the URL, or ID, to be extracted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>An integer ID of a Scratch object, whether a studio or project.</p>
+<p>In case of error, returns None.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scrape.Scraper.get_ids_from_file">
+<code class="sig-name descname">get_ids_from_file</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="headerlink" href="#scrape.Scraper.get_ids_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Returns a list of IDs from a newline-separated file.</dt><dd><p>Project/studio link agnostic. Works with links and IDs.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – String file name of a text file with line-separated URLs or IDs.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of integer IDs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scrape.Scraper.get_projects_in_studio">
+<code class="sig-name descname">get_projects_in_studio</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#scrape.Scraper.get_projects_in_studio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the set of project IDs contained in a given Scratch studio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – An integer Scratch studio ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A set of project IDs.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – An error occurred accessing the Scratch API.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scrape.Scraper.make_dir">
+<code class="sig-name descname">make_dir</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#scrape.Scraper.make_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a directory given path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – A file path on the current system.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True, if directory was successfully created or already existed.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – Failed to create the directory.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="../genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="../py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="../search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">CCL Scratch Scrape</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Creative Computing Lab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
