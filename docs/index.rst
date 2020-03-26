@@ -3,7 +3,7 @@
 CCL Scratch Scrape
 ==================
 
-A Python package with which scrape Scratch JSON files.
+A Python package with which to scrape Scratch JSON files.
 
 The project repository is hosted here: https://github.com/GSE-CCL/scratch-scrape
 

@@ -1,5 +1,5 @@
 # Scratch Scrape
-A Python package with which scrape Scratch JSON files.
+A Python package with which to scrape Scratch JSON files.
 
 ## Setup
 
