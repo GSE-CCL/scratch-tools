@@ -1,7 +1,0 @@
-ccl_scratch_scrape
-==================
-
-.. toctree::
-   :maxdepth: 4
-
-   ccl_scratch_scrape

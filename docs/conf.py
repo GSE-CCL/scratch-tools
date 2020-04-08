@@ -12,12 +12,12 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../ccl_scratch_scrape'))
+sys.path.insert(0, os.path.abspath('../'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'CCL Scratch Scrape'
+project = 'CCL Scratch Tools'
 copyright = '2020, Creative Computing Lab'
 author = 'Creative Computing Lab'
 master_doc = 'index'

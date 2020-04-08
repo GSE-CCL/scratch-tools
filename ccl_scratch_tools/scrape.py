@@ -9,6 +9,8 @@ class Scraper():
     """A scraper with which to scrape Scratch projects.
 
     Typical usage example:
+
+      from ccl_scratch_tools import Scraper
         
       scraper = Scraper()
       
