@@ -1,6 +1,9 @@
 # Scratch Tools
 A Python package with which to work with Scratch JSON files.
 
+This project has been relocated to [https://github.com/GSE-CCL/scratch-tools](https://github.com/GSE-CCL/scratch-tools).
+
+
 ## Setup
 
 Make sure you have Python 3.7 or higher. Then install the package by running ```pip install ccl-scratch-tools```.
