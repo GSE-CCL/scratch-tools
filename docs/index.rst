@@ -1,17 +1,17 @@
 :orphan:
 
-CCL Scratch Scrape
-==================
+CCL Scratch Tools
+=================
 
-A Python package with which to scrape Scratch JSON files.
+A Python package with which to work with Scratch JSON files.
 
-The project repository is hosted here: https://github.com/GSE-CCL/scratch-scrape
+The project repository is hosted here: https://github.com/GSE-CCL/scratch-tools
 
 
 Usage
 =====
 
-To use this package, make sure you have Python 3.7 or higher. Run pip install ccl-scratch-scrape to install.
+To use this package, make sure you have Python 3.7 or higher. Run pip install ccl-scratch-tools to install.
 
 Then use the API, as described in this documentation.
 
@@ -19,8 +19,9 @@ Then use the API, as described in this documentation.
 API documentation
 =================
 
-.. automodule:: scrape
+.. automodule:: ccl_scratch_tools
    :members:
+
 
 .. toctree::
    :maxdepth: 2

@@ -1,0 +1,2 @@
+pytest
+ccl_scratch_tools
