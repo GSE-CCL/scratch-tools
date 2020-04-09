@@ -3,7 +3,8 @@ import os
 import pytest
 import sys
 
-sys.path.insert(0, os.path.abspath('../'))
+# Use this when testing the local copy:
+#sys.path.insert(0, os.path.abspath('../'))
 from ccl_scratch_tools import Parser, Scraper
 
 

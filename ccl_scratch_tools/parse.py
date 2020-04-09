@@ -1,4 +1,5 @@
-import ccl_scratch_tools.blocks
+from __future__ import absolute_import
+from . import blocks
 import json
 
 class Parser():
