@@ -61,12 +61,11 @@ class Parser():
         try:
             blocks = dict()
             for target in data["targets"]:
-                if target["isStage"] == False:
-                    for block in target["blocks"]:
-                        block = target["blocks"][block]
-                        if block["opcode"] not in blocks:
-                            blocks[block["opcode"]] = 0
-                        blocks[block["opcode"]] += 1
+                for block in target["blocks"]:
+                    block = target["blocks"][block]
+                    if block["opcode"] not in blocks:
+                        blocks[block["opcode"]] = 0
+                    blocks[block["opcode"]] += 1
             return blocks
         except:
             return False
@@ -86,12 +85,11 @@ class Parser():
         try:
             categories = dict.fromkeys(self.block_data, 0)
             for target in data["targets"]:
-                if target["isStage"] == False:
-                    for block in target["blocks"]:
-                        block = target["blocks"][block]
-                        for category in self.block_data:
-                            if block["opcode"] in category:
-                                categories[category] += 1
+                for block in target["blocks"]:
+                    block = target["blocks"][block]
+                    for category in self.block_data:
+                        if block["opcode"] in category:
+                            categories[category] += 1
             return categories
         except:
             return False

@@ -136,12 +136,13 @@ class Scraper():
                     raise RuntimeError("Cannot handle format of project {0}".format(id))
         return project
 
-    def download_projects(self, ids, projects_to_studio, output_directory=None, file_name=None):
+    def download_projects(self, ids, projects_to_studio=dict(), output_directory=None, file_name=None):
         """Given project IDs, download the JSON files.
         
         Args:
             ids: array-like collection of Scratch project IDs.
             projects_to_studio: dictionary mapping project IDs to studio IDs.
+                If set, creates subdirectories for each studio.
             output_directory (str): directory for output; if not set,
                 defaults to current working directory.
             file_name (str): if set, combines projects into one JSON file with file_name;
@@ -174,7 +175,7 @@ class Scraper():
 
         # If projects has at least one item, we should write to a single file
         if len(projects) > 0 and file_name is not None:
-            with open("{0}/{1}.json".format(output_directory, file_name), "w") as f:
+            with open("{0}/{1}".format(output_directory, file_name), "w") as f:
                 json.dump(projects, f)
 
     def get_ids_from_file(self, filename):
@@ -185,7 +186,7 @@ class Scraper():
             filename: String file name of a text file with line-separated URLs or IDs.
 
         Returns:
-            A list of integer IDs.
+            A list of integer IDs. Empty if error reading file.
         """
         ids = list()
         try:
