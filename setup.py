@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ccl_scratch_scrape",
-    version="0.0.2",
+    version="0.0.3",
     author="Creative Computing Lab",
     author_email="jarchibald@college.harvard.edu",
     description="Tools by which to scrape Scratch JSON files.",
