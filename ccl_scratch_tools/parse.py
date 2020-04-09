@@ -1,3 +1,4 @@
+import blocks
 import json
 
 class Parser():
@@ -12,11 +13,11 @@ class Parser():
       blocks = parser.blockify("555555555.json")
     """
 
-    def __init__(self, block_data="blocks.json"):
+    def __init__(self):
         """Initializes parser with studio and project URLs."""
 
-        with open(block_data) as f:
-            self.block_data = json.load(f)
+        self.block_data = blocks.blocks
+        self.block_ignore = blocks.ignore
 
     def blockify(self, file_name):
         """Gets the statistics about a Scratch project.
@@ -60,12 +61,13 @@ class Parser():
 
         try:
             blocks = dict()
-            for target in data["targets"]:
+            for target in scratch_data["targets"]:
                 for block in target["blocks"]:
                     block = target["blocks"][block]
-                    if block["opcode"] not in blocks:
-                        blocks[block["opcode"]] = 0
-                    blocks[block["opcode"]] += 1
+                    if block["opcode"] not in self.block_ignore:
+                        if block["opcode"] not in blocks:
+                            blocks[block["opcode"]] = 0
+                        blocks[block["opcode"]] += 1
             return blocks
         except:
             return False
@@ -84,11 +86,11 @@ class Parser():
 
         try:
             categories = dict.fromkeys(self.block_data, 0)
-            for target in data["targets"]:
+            for target in scratch_data["targets"]:
                 for block in target["blocks"]:
                     block = target["blocks"][block]
                     for category in self.block_data:
-                        if block["opcode"] in category:
+                        if block["opcode"] in self.block_data[category]:
                             categories[category] += 1
             return categories
         except:
@@ -108,7 +110,7 @@ class Parser():
 
         try:
             comments = dict()
-            for target in data["targets"]:
+            for target in scratch_data["targets"]:
                 if len(target["comments"]) > 0:
                     # Loop through blocks to see which comments go where
                     for block in target["blocks"]:
@@ -136,7 +138,7 @@ class Parser():
 
         try:
             comments = list()
-            for target in data["targets"]:
+            for target in scratch_data["targets"]:
                 for comment in target["comments"]:
                     comments.append(target["comments"][comment]["text"])
             return comments
@@ -157,7 +159,7 @@ class Parser():
 
         try:
             costumes = list()
-            for target in data["targets"]:
+            for target in scratch_data["targets"]:
                 for costume in target["costumes"]:
                     costumes.append(costume["name"])
             return costumes
@@ -178,7 +180,7 @@ class Parser():
 
         try:
             sounds = list()
-            for target in data["targets"]:
+            for target in scratch_data["targets"]:
                 for sound in target["sounds"]:
                     sounds.append(sound["name"])
             return sounds
@@ -199,7 +201,7 @@ class Parser():
 
         try:
             variables = list()
-            for target in data["targets"]:
+            for target in scratch_data["targets"]:
                 for variable in target["variables"]:
                     variables.append(target["variables"][variable][0])
             return variables
