@@ -48,6 +48,22 @@ class Parser():
         except:
             return False
 
+    def get_block_name(self, opcode):
+        """Gets the human-readable name of a Scratch block.
+        
+        Args:
+            opcode (str): the Scratch opcode of the block.
+
+        Returns:
+            A string containing the block's human-readable name.
+
+            If the opcode isn't listed in our block information, returns None.
+        """
+        for category in self.block_data:
+            if opcode in self.block_data[category]:
+                return self.block_data[category][opcode]
+
+
     def get_blocks(self, scratch_data):
         """Gets the blocks used in a Scratch project.
         
