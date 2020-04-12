@@ -71,7 +71,8 @@ class Parser():
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
-            A dictionary mapping used block names to the number of times they've been used. Excludes unused blocks.
+            A dictionary mapping used block opcodes to a list of block IDs
+            (the IDs of the blocks of this type). Excludes unused blocks.
 
             If the input data is invalid, returns False.
         """
@@ -79,12 +80,12 @@ class Parser():
         try:
             blocks = dict()
             for target in scratch_data["targets"]:
-                for block in target["blocks"]:
-                    block = target["blocks"][block]
+                for block_id in target["blocks"]:
+                    block = target["blocks"][block_id]
                     if block["opcode"] not in self.block_ignore:
                         if block["opcode"] not in blocks:
-                            blocks[block["opcode"]] = 0
-                        blocks[block["opcode"]] += 1
+                            blocks[block["opcode"]] = list()
+                        blocks[block["opcode"]].append(block_id)
             return blocks
         except:
             return False
