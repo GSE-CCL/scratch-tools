@@ -19,6 +19,7 @@ class Parser():
 
         self.block_data = blocks.blocks
         self.block_ignore = blocks.ignore
+        self.event_listeners = blocks.event_listeners
 
     def blockify(self, file_name):
         """Gets the statistics about a Scratch project.
@@ -205,6 +206,103 @@ class Parser():
         except:
             return False
 
+    def loop_through_blocks(self, block_id, scratch_data, mode="next"):
+        """Loops through blocks in forward or backward direction.
+        
+        Args:
+            block_id (str): The ID of the block where we start our loop.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+            mode (str): The mode in which we're looping -- "next" or "parent". Defaults to "next".
+
+        Return:
+            A list of block IDs, each of which corresponds to a block related to block_id.
+            The first element of the list will be the block_id argument passed in.
+            Returns False if data or arguments are invalid.
+        """
+
+        if mode not in ["next", "parent"]:
+            return False
+
+        if "targets" in scratch_data:
+            blocks = [block_id]
+            for target in scratch_data["targets"]:
+                if block_id in target["blocks"]:
+                    next_block = target["blocks"][block_id][mode]
+                    while next_block is not None:
+                        blocks.append(next_block)
+                        next_block = target["blocks"][next_block][mode]
+            return blocks
+
+    def get_child_blocks(self, block_id, scratch_data):
+        """Gets the child blocks of a given block.
+        
+        Args:
+            block_id (str): The ID of the block whose children we're retrieving.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+
+        Returns:
+            A list of block IDs, each of which corresponds to a child block of block_id.
+            The first element of the list will be the block_id argument passed in.
+            Returns False if data are invalid.
+        """
+
+        if "targets" in scratch_data:
+            children = [block_id]
+            for target in scratch_data["targets"]:
+                if block_id in target["blocks"]:
+                    # If this is a block that can have substacks, like loops or conditions
+                    if "SUBSTACK" in target["blocks"][block_id]["inputs"]:
+                        children += self.loop_through_blocks(target["blocks"][block_id]["inputs"]["SUBSTACK"][1], scratch_data)
+                    # If this is a block that doesn't have substacks but functionally operates like it does
+                    elif target["blocks"][block_id]["opcode"] in self.event_listeners:
+                        children += self.loop_through_blocks(target["blocks"][block_id]["next"], scratch_data)
+            return children
+        return False
+
+    def get_surrounding_blocks(self, block_id, scratch_data, count=5, delve=False):
+        """Gets the surrounding blocks given a block ID.
+        
+        Args:
+            block_id (str): The ID of the block of which to capture surrounding blocks.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+            count (int): The maximum number of blocks you want to capture, including block_id.
+                Defaults to 5.
+            delve (bool): Whether we should only return child blocks if this block has children,
+                as with loops or event listeners.
+
+        Returns:
+            An ordered list of the IDs of the blocks surrounding block_id,
+            including block_id in the middle.
+        """
+        
+        before = (count - 1) // 2
+        after = count - 1 - before
+
+        if "targets" in scratch_data:
+            for target in scratch_data["targets"]:
+                if block_id in target["blocks"]:
+                    children = self.get_child_blocks(block_id, scratch_data)
+
+                    # If we just want children and we have children
+                    if delve and len(children) > 1:
+                        return children[0:count]
+                    # If we don't want just children but we do have children
+                    elif not delve and len(children) > 1:
+                        before_blocks = self.loop_through_blocks(block_id, scratch_data, mode="parent")
+                        before_blocks = before_blocks[1:before + 1]
+                        before_blocks.reverse()
+
+                        return before_blocks + children[0:after + 1]
+                    # If we don't have children
+                    else:
+                        before_blocks = self.loop_through_blocks(block_id, scratch_data, mode="parent")
+                        after_blocks = self.loop_through_blocks(block_id, scratch_data, mode="next")
+                        before_blocks = before_blocks[1:before + 1]
+                        before_blocks.reverse()
+
+                        return before_blocks + after_blocks[0:after + 1]
+        return False
+        
     def get_variables(self, scratch_data):
         """Gets the variables used in a Scratch project.
         

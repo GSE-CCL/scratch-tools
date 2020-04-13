@@ -15,3 +15,13 @@ ignore = {
     "sound_sounds_menu": "Sounds Menu",
     "procedures_prototype": "Block Prototype"
 }
+
+# Event listeners
+event_listeners = {
+    "event_whenflagclicked": "When Flag Clicked",
+    "event_whenkeypressed": "When Key Pressed",
+    "event_whenthisspriteclicked": "When Sprite Clicked",
+    "event_whenbackdropswitchesto": "When Backdrop Switches To",
+    "event_whengreaterthan": "When Greater Than",
+    "event_whenbroadcastreceived": "When Broadcast Received"
+}
