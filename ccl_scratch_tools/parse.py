@@ -20,6 +20,7 @@ class Parser():
         self.block_data = blocks.blocks
         self.block_ignore = blocks.ignore
         self.event_listeners = blocks.event_listeners
+        self.scratch_image_source = "https://assets.scratch.mit.edu/internalapi/asset/{0}/get/"
 
     def blockify(self, file_name):
         """Gets the statistics about a Scratch project.
@@ -72,7 +73,8 @@ class Parser():
             block_id (str): the Scratch block ID in the project data structure.
 
         Returns:
-            A dictionary containing the sprite's information from the project data structure.
+            A dictionary containing the sprite's information from the project data structure,
+            including sprite name, current costume asset ID, and current costume image URL.
             Returns False if doesn't exist or if trouble accessing the data.
         """
 
@@ -81,7 +83,9 @@ class Parser():
                 if block_id in target["blocks"]:
                     sprite = {
                         "name": target["name"],
-                        "costume_asset": target["costumes"][target["currentCostume"]]["assetId"]
+                        "costume_asset": target["costumes"][target["currentCostume"]]["assetId"],
+                        "costume_asset_url": self.scratch_image_source
+                            .format(target["costumes"][target["currentCostume"]]["md5ext"])
                     }
                     return sprite
             return False

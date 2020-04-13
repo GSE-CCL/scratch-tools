@@ -11,5 +11,9 @@ def test_get_sprite_nonexistent(parser, full_sb3):
 def test_get_sprite(parser, full_sb3):
     result = parser.get_sprite("CupN)`F`z1tugXtDqYzj", full_sb3)
     assert type(result) == dict
-    assert result == {"name": "Scratch", "costume_asset": "e6ddc55a6ddd9cc9d84fe0b4c21e016f"}
+    assert result == {
+        "name": "Scratch",
+        "costume_asset": "e6ddc55a6ddd9cc9d84fe0b4c21e016f",
+        "costume_asset_url": "https://assets.scratch.mit.edu/internalapi/asset/e6ddc55a6ddd9cc9d84fe0b4c21e016f.svg/get/"
+    }
     
