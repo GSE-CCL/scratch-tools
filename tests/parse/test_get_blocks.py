@@ -14,7 +14,7 @@ def test_get_blocks_full(parser, full_sb3):
     result = parser.get_blocks(full_sb3)
     assert type(result) == dict
     assert len(result) == 20
-    assert result == {
+    lengths = {
         "event_whenflagclicked": 1,
         "control_wait": 1,
         "control_repeat": 1,
@@ -36,3 +36,5 @@ def test_get_blocks_full(parser, full_sb3):
         "operator_random": 1,
         "sound_playuntildone": 1
     }
+    for block in result:
+        assert len(result[block]) == lengths[block]
