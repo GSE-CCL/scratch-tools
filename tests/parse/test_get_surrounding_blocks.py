@@ -1,7 +1,11 @@
 import pytest
 
-def test_get_surrounding_blocks_nonexistent(parser):
+def test_get_surrounding_blocks_nodata(parser):
     result = parser.get_surrounding_blocks("fakeid", dict())
+    assert result == False
+
+def test_get_surrounding_blocks_nonexistent(parser, full_sb3):
+    result = parser.get_surrounding_blocks("fakeid", full_sb3)
     assert result == False
 
 def test_get_surrounding_blocks_delve(parser, full_sb3):

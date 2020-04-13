@@ -60,10 +60,52 @@ class Parser():
 
             If the opcode isn't listed in our block information, returns None.
         """
+
         for category in self.block_data:
             if opcode in self.block_data[category]:
                 return self.block_data[category][opcode]
 
+    def get_sprite(self, block_id, scratch_data):
+        """Gets the sprite with which a block is associated.
+        
+        Args:
+            block_id (str): the Scratch block ID in the project data structure.
+
+        Returns:
+            A dictionary containing the sprite's information from the project data structure.
+            Returns False if doesn't exist or if trouble accessing the data.
+        """
+
+        if "targets" in scratch_data:
+            for target in scratch_data["targets"]:
+                if block_id in target["blocks"]:
+                    sprite = {
+                        "name": target["name"],
+                        "costume_asset": target["costumes"][target["currentCostume"]]["assetId"]
+                    }
+                    return sprite
+            return False
+        else:
+            return False
+    
+    def get_block(self, block_id, scratch_data):
+        """Returns the block object in the Scratch object given block ID.
+        
+        Args:
+            block_id (str): the Scratch block ID in the project data structure.
+
+        Returns:
+            A dictionary containing the block's information from the project data structure.
+            Returns False if doesn't exist or if trouble accessing the data.
+        """
+
+        if "targets" in scratch_data:
+            for target in scratch_data["targets"]:
+                if block_id in target["blocks"]:
+                    return target["blocks"][block_id]
+            return False
+        else:
+            return False
 
     def get_blocks(self, scratch_data):
         """Gets the blocks used in a Scratch project.
@@ -272,7 +314,8 @@ class Parser():
 
         Returns:
             An ordered list of the IDs of the blocks surrounding block_id,
-            including block_id in the middle.
+            including block_id in the middle. Returns False if the block_id doesn't exist,
+            or if the data are invalid.
         """
         
         before = (count - 1) // 2

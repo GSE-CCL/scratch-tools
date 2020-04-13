@@ -1,8 +1,12 @@
 import pytest
 
-def test_loop_through_blocks_nonexistent(parser):
+def test_loop_through_blocks_nodata(parser):
     result = parser.get_child_blocks("fakeid", dict())
     assert result == False
+
+def test_loop_through_blocks_nonexistent(parser, full_sb3):
+    result = parser.get_child_blocks("fakeid", full_sb3)
+    assert result == ["fakeid"]
 
 def test_loop_through_blocks_next(parser, full_sb3):
     result = parser.loop_through_blocks("0.OsCi6`8oaNdL~)e{=.", full_sb3, mode="next")

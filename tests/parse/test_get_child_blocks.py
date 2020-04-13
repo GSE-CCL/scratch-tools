@@ -1,8 +1,12 @@
 import pytest
 
-def test_get_child_blocks_nonexistent(parser):
+def test_get_child_blocks_nodata(parser):
     result = parser.get_child_blocks("fakeid", dict())
     assert result == False
+
+def test_get_child_blocks_nonexistent(parser, full_sb3):
+    result = parser.get_child_blocks("fakeid", full_sb3)
+    assert result == ["fakeid"]
 
 def test_get_child_blocks_substack(parser, full_sb3):
     result = parser.get_child_blocks("CupN)`F`z1tugXtDqYzj", full_sb3)
