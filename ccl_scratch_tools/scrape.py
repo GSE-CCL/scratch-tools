@@ -29,78 +29,6 @@ class Scraper():
         else:
             self.PROJECT_URL = project_url
 
-    def make_dir(self, path):
-        """Creates a directory given path.
-        
-        Args:
-            path (str): A file path on the current system.
-
-        Returns:
-            True, if directory was successfully created or already existed.
-
-        Raises:
-            RuntimeError: Failed to create the directory.
-        """
-        try:
-            os.mkdir(path)
-        except OSError:
-            if FileExistsError:
-                return True
-            else:
-                raise RuntimeError("Creation of directory '{0}' failed".format(path))
-        else:
-            return True
-
-    def get_id(self, url):
-        """Returns the integer ID from a string that may be a URL or an ID.
-        
-        Args:
-            url: The string representing the URL, or ID, to be extracted.
-
-        Returns:
-            An integer ID of a Scratch object, whether a studio or project.
-
-            In case of error, returns None.
-        """
-        url = url.rstrip()
-        a = url.rstrip("/")
-        try:
-            return int(a.split("/")[-1])
-        except:
-            return None
-
-    def get_projects_in_studio(self, id):
-        """Returns the set of project IDs contained in a given Scratch studio.
-        
-        Args:
-            id: An integer Scratch studio ID.
-            
-        Returns:
-            A set of project IDs.
-
-        Raises:
-            RuntimeError: An error occurred accessing the Scratch API.
-        """
-        offset = 0
-        project_ids = set()
-        while True:
-            url = self.STUDIO_URL.format(id, offset)
-            r = requests.get(url)
-
-            if r.status_code != 200:
-                raise RuntimeError("GET {0} failed with status code {1}".format(url, r.status_code))
-
-            # No more projects
-            projects = r.json()
-            if len(projects) < 1:
-                break
-            else:
-                for project in projects:
-                    project_ids.add(project["id"])
-                offset += 40
-            
-        return project_ids
-
     def download_project(self, id):
         """Downloads an individual project JSON and returns it as a Python object.
         
@@ -178,6 +106,24 @@ class Scraper():
             with open("{0}/{1}".format(output_directory, file_name), "w") as f:
                 json.dump(projects, f)
 
+    def get_id(self, url):
+        """Returns the integer ID from a string that may be a URL or an ID.
+        
+        Args:
+            url: The string representing the URL, or ID, to be extracted.
+
+        Returns:
+            An integer ID of a Scratch object, whether a studio or project.
+
+            In case of error, returns None.
+        """
+        url = url.rstrip()
+        a = url.rstrip("/")
+        try:
+            return int(a.split("/")[-1])
+        except:
+            return None
+
     def get_ids_from_file(self, filename):
         """Returns a list of IDs from a newline-separated file.
             Project/studio link agnostic. Works with links and IDs.
@@ -197,3 +143,57 @@ class Scraper():
         except:
             pass
         return ids
+
+    def get_projects_in_studio(self, id):
+        """Returns the set of project IDs contained in a given Scratch studio.
+        
+        Args:
+            id: An integer Scratch studio ID.
+            
+        Returns:
+            A set of project IDs.
+
+        Raises:
+            RuntimeError: An error occurred accessing the Scratch API.
+        """
+        offset = 0
+        project_ids = set()
+        while True:
+            url = self.STUDIO_URL.format(id, offset)
+            r = requests.get(url)
+
+            if r.status_code != 200:
+                raise RuntimeError("GET {0} failed with status code {1}".format(url, r.status_code))
+
+            # No more projects
+            projects = r.json()
+            if len(projects) < 1:
+                break
+            else:
+                for project in projects:
+                    project_ids.add(project["id"])
+                offset += 40
+            
+        return project_ids
+    
+    def make_dir(self, path):
+        """Creates a directory given path.
+        
+        Args:
+            path (str): A file path on the current system.
+
+        Returns:
+            True, if directory was successfully created or already existed.
+
+        Raises:
+            RuntimeError: Failed to create the directory.
+        """
+        try:
+            os.mkdir(path)
+        except OSError:
+            if FileExistsError:
+                return True
+            else:
+                raise RuntimeError("Creation of directory '{0}' failed".format(path))
+        else:
+            return True

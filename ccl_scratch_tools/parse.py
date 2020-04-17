@@ -1,6 +1,7 @@
 from __future__ import absolute_import
-from . import blocks
+from . import blocks, sb3_schema
 import json
+from jsonschema import Draft7Validator
 
 class Parser():
     """A parser with which to parse Scratch projects.
@@ -21,22 +22,36 @@ class Parser():
         self.block_ignore = blocks.ignore
         self.event_listeners = blocks.event_listeners
         self.scratch_image_source = "https://assets.scratch.mit.edu/internalapi/asset/{0}/get/"
+        self.sb3_schema = sb3_schema.sb3_schema
 
-    def blockify(self, file_name):
-        """Gets the statistics about a Scratch project.
+    def blockify(self, file_name=None, scratch_data=None):
+        """Gets the statistics about a Scratch project given either
+            a file name or Python object with Scratch data.
         
         Args:
-            file_name (str): the name of the Scratch JSON file to report on.
+            file_name (str): the name of the Scratch JSON file to report on. (optional)
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON. (optional)
 
         Returns:
             A dictionary mapping function names (as in this class) to their results.
 
             If the file couldn't be opened, returns False.
+        
+        Raises:
+            ValueError: If neither file_name or scratch_data parameter is set.
         """
 
+        if file_name is None and scratch_data is None:
+            raise ValueError("Either file_name or scratch_data parameter is required.")
+
         try:
-            with open(file_name) as f:
-                scratch_data = json.load(f)
+            if file_name is not None:
+                with open(file_name) as f:
+                    scratch_data = json.load(f)
+
+            if scratch_data is not None and "targets" not in scratch_data:
+                return False
+
             results = {
                 "block_comments": self.get_block_comments(scratch_data),
                 "blocks": self.get_blocks(scratch_data),
@@ -47,6 +62,54 @@ class Parser():
                 "variables": self.get_variables(scratch_data)
             }
             return results
+        except:
+            return False
+
+    def get_block(self, block_id, scratch_data):
+        """Returns the block object in the Scratch object given block ID.
+        
+        Args:
+            block_id (str): the Scratch block ID in the project data structure.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+
+        Returns:
+            A dictionary containing the block's information from the project data structure.
+            Returns False if doesn't exist or if trouble accessing the data.
+        """
+
+        if "targets" in scratch_data:
+            for target in scratch_data["targets"]:
+                if block_id in target["blocks"]:
+                    return target["blocks"][block_id]
+            return False
+        else:
+            return False
+
+    def get_block_comments(self, scratch_data):
+        """Gets the comments left in a Scratch project, organized by block.
+        
+        Args:
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+
+        Returns:
+            comments: a dictionary mapping blocks to a list of comments associated with them.
+
+            If the input data is invalid, returns False.
+        """
+
+        try:
+            comments = dict()
+            for target in scratch_data["targets"]:
+                if len(target["comments"]) > 0:
+                    # Loop through blocks to see which comments go where
+                    for block in target["blocks"]:
+                        block = target["blocks"][block]
+                        if "comment" in block and len(block["comment"]) > 0:
+                            if block["opcode"] not in comments:
+                                comments[block["opcode"]] = list()
+
+                            comments[block["opcode"]].append(target["comments"][block["comment"]]["text"])
+            return comments
         except:
             return False
 
@@ -66,50 +129,34 @@ class Parser():
             if opcode in self.block_data[category]:
                 return self.block_data[category][opcode]
 
-    def get_sprite(self, block_id, scratch_data):
-        """Gets the sprite with which a block is associated.
+    def get_block_names(self, items, scratch_data=None):
+        """Gets the human-readable name of a list of Scratch blocks.
         
         Args:
-            block_id (str): the Scratch block ID in the project data structure.
+            items: a list of blocks to translate, whether a list of opcodes
+                or a list of block IDs.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+                Include this only if items is a list of block IDs.
 
         Returns:
-            A dictionary containing the sprite's information from the project data structure,
-            including sprite name, current costume asset ID, and current costume image URL.
-            Returns False if doesn't exist or if trouble accessing the data.
+            A list containing the blocks' human-readable names.
+
+            If the opcode isn't listed in our block information, that item of the list will be None.
         """
 
-        if "targets" in scratch_data:
-            for target in scratch_data["targets"]:
-                if block_id in target["blocks"]:
-                    sprite = {
-                        "name": target["name"],
-                        "costume_asset": target["costumes"][target["currentCostume"]]["assetId"],
-                        "costume_asset_url": self.scratch_image_source
-                            .format(target["costumes"][target["currentCostume"]]["md5ext"])
-                    }
-                    return sprite
-            return False
+        names = list()
+        if scratch_data is None:
+            for item in items:
+                names.append(self.get_block_name(item))
         else:
-            return False
-    
-    def get_block(self, block_id, scratch_data):
-        """Returns the block object in the Scratch object given block ID.
-        
-        Args:
-            block_id (str): the Scratch block ID in the project data structure.
+            for item in items:
+                block = self.get_block(item, scratch_data)
+                if block is False:
+                    names.append(None)
+                else:
+                    names.append(self.get_block_name(block["opcode"]))
 
-        Returns:
-            A dictionary containing the block's information from the project data structure.
-            Returns False if doesn't exist or if trouble accessing the data.
-        """
-
-        if "targets" in scratch_data:
-            for target in scratch_data["targets"]:
-                if block_id in target["blocks"]:
-                    return target["blocks"][block_id]
-            return False
-        else:
-            return False
+        return names
 
     def get_blocks(self, scratch_data):
         """Gets the blocks used in a Scratch project.
@@ -160,34 +207,32 @@ class Parser():
             return categories
         except:
             return False
-    
-    def get_block_comments(self, scratch_data):
-        """Gets the comments left in a Scratch project, organized by block.
+
+    def get_child_blocks(self, block_id, scratch_data):
+        """Gets the child blocks of a given block.
         
         Args:
+            block_id (str): The ID of the block whose children we're retrieving.
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
-            comments: a dictionary mapping blocks to a list of comments associated with them.
-
-            If the input data is invalid, returns False.
+            A list of block IDs, each of which corresponds to a child block of block_id.
+            The first element of the list will be the block_id argument passed in.
+            Returns False if data are invalid.
         """
 
-        try:
-            comments = dict()
+        if "targets" in scratch_data:
+            children = [block_id]
             for target in scratch_data["targets"]:
-                if len(target["comments"]) > 0:
-                    # Loop through blocks to see which comments go where
-                    for block in target["blocks"]:
-                        block = target["blocks"][block]
-                        if "comment" in block and len(block["comment"]) > 0:
-                            if block["opcode"] not in comments:
-                                comments[block["opcode"]] = list()
-
-                            comments[block["opcode"]].append(target["comments"][block["comment"]]["text"])
-            return comments
-        except:
-            return False
+                if block_id in target["blocks"]:
+                    # If this is a block that can have substacks, like loops or conditions
+                    if "SUBSTACK" in target["blocks"][block_id]["inputs"]:
+                        children += self.loop_through_blocks(target["blocks"][block_id]["inputs"]["SUBSTACK"][1], scratch_data)
+                    # If this is a block that doesn't have substacks but functionally operates like it does
+                    elif target["blocks"][block_id]["opcode"] in self.event_listeners:
+                        children += self.loop_through_blocks(target["blocks"][block_id]["next"], scratch_data)
+            return children
+        return False
 
     def get_comments(self, scratch_data):
         """Gets the comments left in a Scratch project.
@@ -252,58 +297,32 @@ class Parser():
         except:
             return False
 
-    def loop_through_blocks(self, block_id, scratch_data, mode="next"):
-        """Loops through blocks in forward or backward direction.
+    def get_sprite(self, block_id, scratch_data):
+        """Gets the sprite with which a block is associated.
         
         Args:
-            block_id (str): The ID of the block where we start our loop.
-            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
-            mode (str): The mode in which we're looping -- "next" or "parent". Defaults to "next".
-
-        Return:
-            A list of block IDs, each of which corresponds to a block related to block_id.
-            The first element of the list will be the block_id argument passed in.
-            Returns False if data or arguments are invalid.
-        """
-
-        if mode not in ["next", "parent"]:
-            return False
-
-        if "targets" in scratch_data:
-            blocks = [block_id]
-            for target in scratch_data["targets"]:
-                if block_id in target["blocks"]:
-                    next_block = target["blocks"][block_id][mode]
-                    while next_block is not None:
-                        blocks.append(next_block)
-                        next_block = target["blocks"][next_block][mode]
-            return blocks
-
-    def get_child_blocks(self, block_id, scratch_data):
-        """Gets the child blocks of a given block.
-        
-        Args:
-            block_id (str): The ID of the block whose children we're retrieving.
+            block_id (str): the Scratch block ID in the project data structure.
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
-            A list of block IDs, each of which corresponds to a child block of block_id.
-            The first element of the list will be the block_id argument passed in.
-            Returns False if data are invalid.
+            A dictionary containing the sprite's information from the project data structure,
+            including sprite name, current costume asset ID, and current costume image URL.
+            Returns False if doesn't exist or if trouble accessing the data.
         """
 
         if "targets" in scratch_data:
-            children = [block_id]
             for target in scratch_data["targets"]:
                 if block_id in target["blocks"]:
-                    # If this is a block that can have substacks, like loops or conditions
-                    if "SUBSTACK" in target["blocks"][block_id]["inputs"]:
-                        children += self.loop_through_blocks(target["blocks"][block_id]["inputs"]["SUBSTACK"][1], scratch_data)
-                    # If this is a block that doesn't have substacks but functionally operates like it does
-                    elif target["blocks"][block_id]["opcode"] in self.event_listeners:
-                        children += self.loop_through_blocks(target["blocks"][block_id]["next"], scratch_data)
-            return children
-        return False
+                    sprite = {
+                        "name": target["name"],
+                        "costume_asset": target["costumes"][target["currentCostume"]]["assetId"],
+                        "costume_asset_url": self.scratch_image_source
+                            .format(target["costumes"][target["currentCostume"]]["md5ext"])
+                    }
+                    return sprite
+            return False
+        else:
+            return False
 
     def get_surrounding_blocks(self, block_id, scratch_data, count=5, delve=False):
         """Gets the surrounding blocks given a block ID.
@@ -370,3 +389,43 @@ class Parser():
             return variables
         except:
             return False
+
+    def is_scratch3(self, scratch_data):
+        """Checks a supposed Scratch data file against the Scratch 3 schema.
+        
+        Args:
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+
+        Returns:
+            True if the data matches the Scratch 3 schema. Otherwise False.
+        """
+
+        return Draft7Validator(self.sb3_schema).is_valid(scratch_data)
+
+    def loop_through_blocks(self, block_id, scratch_data, mode="next"):
+        """Loops through blocks in forward or backward direction.
+        
+        Args:
+            block_id (str): The ID of the block where we start our loop.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+            mode (str): The mode in which we're looping -- "next" or "parent". Defaults to "next".
+
+        Return:
+            A list of block IDs, each of which corresponds to a block related to block_id.
+            The first element of the list will be the block_id argument passed in.
+            Returns False if data or arguments are invalid.
+        """
+
+        if mode not in ["next", "parent"]:
+            return False
+
+        if "targets" in scratch_data:
+            blocks = [block_id]
+            for target in scratch_data["targets"]:
+                if block_id in target["blocks"]:
+                    next_block = target["blocks"][block_id][mode]
+                    while next_block is not None:
+                        blocks.append(next_block)
+                        next_block = target["blocks"][next_block][mode]
+            return blocks
+            
