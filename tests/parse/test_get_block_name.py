@@ -4,7 +4,6 @@ def test_get_block_name_nonexistent(parser):
     result = parser.get_block_name("scratch_nonexistent")
     assert result is None
 
-
 def test_get_block_name_categories(parser):
     tests = [
         ["motion_turnleft", "Turn Left"],

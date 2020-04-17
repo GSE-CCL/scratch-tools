@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from . import blocks
 import json
 
-## TODO: get_block_names, is_scratch3, satisfies_schema
+## TODO: is_scratch3, satisfies_schema
 # schema with what to focus on for each day comparison
 
 class Parser():
@@ -49,7 +49,7 @@ class Parser():
             if file_name is not None:
                 with open(file_name) as f:
                     scratch_data = json.load(f)
-                    
+
             if scratch_data is not None and "targets" not in scratch_data:
                 return False
 
@@ -81,6 +81,35 @@ class Parser():
         for category in self.block_data:
             if opcode in self.block_data[category]:
                 return self.block_data[category][opcode]
+
+    def get_block_names(self, items, scratch_data=None):
+        """Gets the human-readable name of a list of Scratch blocks.
+        
+        Args:
+            items: a list of blocks to translate, whether a list of opcodes
+                or a list of block IDs.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+                Include this only if items is a list of block IDs.
+
+        Returns:
+            A list containing the blocks' human-readable names.
+
+            If the opcode isn't listed in our block information, that item of the list will be None.
+        """
+
+        names = list()
+        if scratch_data is None:
+            for item in items:
+                names.append(self.get_block_name(item))
+        else:
+            for item in items:
+                block = self.get_block(item, scratch_data)
+                if block is False:
+                    names.append(None)
+                else:
+                    names.append(self.get_block_name(block["opcode"]))
+
+        return names
 
     def get_sprite(self, block_id, scratch_data):
         """Gets the sprite with which a block is associated.

@@ -20,7 +20,6 @@ def test_blockify_f_full(parser):
 
 def test_blockify_d_nonexistent(parser):
     result = parser.blockify(scratch_data=dict())
-    
     assert result == False
 
 def test_blockify_d_empty(parser, empty_sb3):
