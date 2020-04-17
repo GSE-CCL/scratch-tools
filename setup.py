@@ -14,6 +14,7 @@ setuptools.setup(
     url="https://github.com/GSE-CCL/scratch-tools",
     packages=setuptools.find_packages(),
     install_requires=[
+        "jsonschema",
         "requests"
     ],
     classifiers=[

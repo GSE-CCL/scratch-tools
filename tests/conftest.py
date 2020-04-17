@@ -13,6 +13,11 @@ def parser():
     return Parser()
 
 @pytest.fixture
+def small_sb2():
+    with open("fixtures/sb2.json") as f:
+        return dict(json.load(f))
+
+@pytest.fixture
 def empty_sb3():
     with open("fixtures/empty.json") as f:
         return dict(json.load(f))

@@ -1,8 +1,9 @@
 from __future__ import absolute_import
-from . import blocks
+from . import blocks, sb3_schema
 import json
+from jsonschema import Draft7Validator
 
-## TODO: is_scratch3, satisfies_schema
+## TODO: satisfies_schema
 # schema with what to focus on for each day comparison
 
 class Parser():
@@ -24,6 +25,7 @@ class Parser():
         self.block_ignore = blocks.ignore
         self.event_listeners = blocks.event_listeners
         self.scratch_image_source = "https://assets.scratch.mit.edu/internalapi/asset/{0}/get/"
+        self.sb3_schema = sb3_schema.sb3_schema
 
     def blockify(self, file_name=None, scratch_data=None):
         """Gets the statistics about a Scratch project given either
@@ -417,3 +419,15 @@ class Parser():
             return variables
         except:
             return False
+
+    def is_scratch3(self, scratch_data):
+        """Checks a supposed Scratch data file against the Scratch 3 schema.
+        
+        Args:
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+
+        Returns:
+            True if the data matches the Scratch 3 schema. Otherwise False.
+        """
+
+        return Draft7Validator(self.sb3_schema).is_valid(scratch_data)
