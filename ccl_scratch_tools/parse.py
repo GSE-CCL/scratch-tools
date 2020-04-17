@@ -2,6 +2,9 @@ from __future__ import absolute_import
 from . import blocks
 import json
 
+## TODO: get_block_names, is_scratch3, satisfies_schema
+# schema with what to focus on for each day comparison
+
 class Parser():
     """A parser with which to parse Scratch projects.
 
@@ -22,21 +25,34 @@ class Parser():
         self.event_listeners = blocks.event_listeners
         self.scratch_image_source = "https://assets.scratch.mit.edu/internalapi/asset/{0}/get/"
 
-    def blockify(self, file_name):
-        """Gets the statistics about a Scratch project.
+    def blockify(self, file_name=None, scratch_data=None):
+        """Gets the statistics about a Scratch project given either
+            a file name or Python object with Scratch data.
         
         Args:
-            file_name (str): the name of the Scratch JSON file to report on.
+            file_name (str): the name of the Scratch JSON file to report on. (optional)
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON. (optional)
 
         Returns:
             A dictionary mapping function names (as in this class) to their results.
 
             If the file couldn't be opened, returns False.
+        
+        Raises:
+            ValueError: If neither file_name or scratch_data parameter is set.
         """
 
+        if file_name is None and scratch_data is None:
+            raise ValueError("Either file_name or scratch_data parameter is required.")
+
         try:
-            with open(file_name) as f:
-                scratch_data = json.load(f)
+            if file_name is not None:
+                with open(file_name) as f:
+                    scratch_data = json.load(f)
+                    
+            if scratch_data is not None and "targets" not in scratch_data:
+                return False
+
             results = {
                 "block_comments": self.get_block_comments(scratch_data),
                 "blocks": self.get_blocks(scratch_data),
@@ -71,6 +87,7 @@ class Parser():
         
         Args:
             block_id (str): the Scratch block ID in the project data structure.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
             A dictionary containing the sprite's information from the project data structure,
@@ -97,6 +114,7 @@ class Parser():
         
         Args:
             block_id (str): the Scratch block ID in the project data structure.
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
             A dictionary containing the block's information from the project data structure.
