@@ -1,8 +1,5 @@
 # Scratch Tools
-A Python package with which to work with Scratch JSON files.
-
-This project has been relocated to [https://github.com/GSE-CCL/scratch-tools](https://github.com/GSE-CCL/scratch-tools).
-
+A Python package with which to work with Scratch JSON files, from the Creative Computing Lab at the Harvard Graduate School of Education.
 
 ## Setup
 

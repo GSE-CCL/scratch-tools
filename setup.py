@@ -12,6 +12,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/GSE-CCL/scratch-tools",
+    project_urls={
+        "Documentation": "https://ccl-scratch-tools.readthedocs.io/en/latest/"
+    },
     packages=setuptools.find_packages(),
     install_requires=[
         "jsonschema",
