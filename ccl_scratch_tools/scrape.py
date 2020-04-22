@@ -17,7 +17,7 @@ class Scraper():
       project = scraper.download_project(555555555)
     """
 
-    def __init__(self, studio_url = None, project_url = None):
+    def __init__(self, studio_url = None, project_url = None, project_meta_url = None):
         """Initializes scraper with studio and project URLs."""
         if studio_url is None:
             self.STUDIO_URL = "https://api.scratch.mit.edu/studios/{0}/projects?limit=40&offset={1}"
@@ -28,6 +28,11 @@ class Scraper():
             self.PROJECT_URL = "https://projects.scratch.mit.edu/{0}"
         else:
             self.PROJECT_URL = project_url
+
+        if project_meta_url is None:
+            self.PROJECT_META_URL = "https://api.scratch.mit.edu/projects/{0}"
+        else:
+            self.PROJECT_META_URL = project_meta_url
 
     def download_project(self, id):
         """Downloads an individual project JSON and returns it as a Python object.
@@ -143,6 +148,29 @@ class Scraper():
         except:
             pass
         return ids
+
+    def get_project_meta(self, id):
+        """Returns the publicly-available metadata about a given Scratch project.
+        
+        Args:
+            id (int): a Scratch project ID.
+
+        Returns:
+            A dictionary with the entire API response from project meta API endpoint.
+        """
+
+        url = self.PROJECT_META_URL.format(id)
+        r = requests.get(url)
+
+        if r.status_code != 200:
+            raise RuntimeError("GET {0} failed with status code {1}".format(url, r.status_code))
+
+        try:
+            project = r.json()
+        except:
+            project = dict()
+            
+        return project
 
     def get_projects_in_studio(self, id):
         """Returns the set of project IDs contained in a given Scratch studio.
