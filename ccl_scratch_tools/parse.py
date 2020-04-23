@@ -25,8 +25,7 @@ class Parser():
         self.sb3_schema = sb3_schema.sb3_schema
 
     def blockify(self, file_name=None, scratch_data=None):
-        """Gets the statistics about a Scratch project given either
-            a file name or Python object with Scratch data.
+        """Gets the statistics about a Scratch project.
         
         Args:
             file_name (str): the name of the Scratch JSON file to report on. (optional)

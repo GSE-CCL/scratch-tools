@@ -18,7 +18,7 @@ class Scraper():
       project = scraper.download_project(555555555)
     """
 
-    def __init__(self, studio_url = None, project_url = None, project_meta_url = None, comments_url = None):
+    def __init__(self, studio_url = None, project_url = None, project_meta_url = None, comments_url = None, user_url = None):
         """Initializes scraper with studio and project URLs."""
         if studio_url is None:
             self.STUDIO_URL = "https://api.scratch.mit.edu/studios/{0}/projects?limit=40&offset={1}"
@@ -39,6 +39,11 @@ class Scraper():
             self.COMMENTS_URL = "https://scratch.mit.edu/site-api/comments/project/{0}/?page={1}"
         else:
             self.COMMENTS_URL = comments_url
+
+        if user_url is None:
+            self.USER_URL = "https://api.scratch.mit.edu/users/{0}"
+        else:
+            self.USER_URL = user_url
 
     def download_project(self, id):
         """Downloads an individual project JSON and returns it as a Python object.
@@ -178,7 +183,7 @@ class Scraper():
             if r.status_code == 404 and page > 1:
                 break
             elif r.status_code != 200:
-                raise RuntimeError("GET {0} failed with status code {1}".format(r.status_code, url))
+                raise RuntimeError("GET {0} failed with status code {1}".format(url, r.status_code))
 
             # Use Beautiful Soup to scrape the webpage for comments
             soup = bs4.BeautifulSoup(r.content, "html.parser")
@@ -252,6 +257,27 @@ class Scraper():
                 offset += 40
             
         return project_ids
+
+    def get_user_info(self, username):
+        """Gets a Scratch user's publicly-available information.
+        
+        Args:
+            username (str): the username to look up.
+
+        Returns:
+            A dictionary with the results of the API call.
+
+        Raises:
+            RuntimeError: An error occurred accessing the Scratch API, or the user doesn't exist.
+        """
+
+        url = self.USER_URL.format(username)
+        r = requests.get(url)
+
+        if r.status_code != 200:
+            raise RuntimeError("GET {0} failed with status code {1}".format(url, r.status_code))
+
+        return r.json()
     
     def make_dir(self, path):
         """Creates a directory given path.
