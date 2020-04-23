@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ccl_scratch_tools",
-    version="0.0.7",
+    version="0.0.8",
     author="Creative Computing Lab",
     author_email="jarchibald@college.harvard.edu",
-    description="Tools by which to work with Scratch JSON files.",
+    description="Tools with which to work with Scratch JSON files.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/GSE-CCL/scratch-tools",
