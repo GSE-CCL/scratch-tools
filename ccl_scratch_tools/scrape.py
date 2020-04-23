@@ -1,4 +1,5 @@
 import argparse
+import bs4
 import json
 import io
 import os
@@ -17,7 +18,7 @@ class Scraper():
       project = scraper.download_project(555555555)
     """
 
-    def __init__(self, studio_url = None, project_url = None, project_meta_url = None):
+    def __init__(self, studio_url = None, project_url = None, project_meta_url = None, comments_url = None):
         """Initializes scraper with studio and project URLs."""
         if studio_url is None:
             self.STUDIO_URL = "https://api.scratch.mit.edu/studios/{0}/projects?limit=40&offset={1}"
@@ -33,6 +34,11 @@ class Scraper():
             self.PROJECT_META_URL = "https://api.scratch.mit.edu/projects/{0}"
         else:
             self.PROJECT_META_URL = project_meta_url
+
+        if comments_url is None:
+            self.COMMENTS_URL = "https://scratch.mit.edu/site-api/comments/project/{0}/?page={1}"
+        else:
+            self.COMMENTS_URL = comments_url
 
     def download_project(self, id):
         """Downloads an individual project JSON and returns it as a Python object.
@@ -149,6 +155,46 @@ class Scraper():
             pass
         return ids
 
+    def get_project_comments(self, id):
+        """Returns the comments on a given Scratch project.
+        
+        Args:
+            id (int): a Scratch project ID.
+
+        Returns:
+            A list of dictionaries, each with keys for author and comment.
+
+        Raises:
+            RuntimeError: An error occurred accessing the Scratch API, or the project doesn't exist.
+        """
+
+        # This is all a remastered version of GSE-CCL/scratch-comments
+        comments = list()
+        page = 1
+        while True:
+            # Call API
+            url = self.COMMENTS_URL.format(id, page)
+            r = requests.get(url)
+            if r.status_code == 404 and page > 1:
+                break
+            elif r.status_code != 200:
+                raise RuntimeError("GET {0} failed with status code {1}".format(r.status_code, url))
+
+            # Use Beautiful Soup to scrape the webpage for comments
+            soup = bs4.BeautifulSoup(r.content, "html.parser")
+            all_comments = soup.select(".info")
+
+            # Go through each comment and clean
+            for comment in all_comments:
+                content = comment.select_one(".content").get_text().strip()
+                if content != "[deleted]":
+                    user = comment.select_one(".name").get_text().strip()
+                    time = comment.select_one(".time")["title"]
+                    comments.append({"username": user, "comment": content, "timestamp": time})
+            page += 1
+
+        return comments
+
     def get_project_meta(self, id):
         """Returns the publicly-available metadata about a given Scratch project.
         
@@ -157,6 +203,9 @@ class Scraper():
 
         Returns:
             A dictionary with the entire API response from project meta API endpoint.
+
+        Raises:
+            RuntimeError: An error occurred accessing the Scratch API.
         """
 
         url = self.PROJECT_META_URL.format(id)

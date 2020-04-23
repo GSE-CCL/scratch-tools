@@ -17,6 +17,7 @@ setuptools.setup(
     },
     packages=setuptools.find_packages(),
     install_requires=[
+        "bs4",
         "jsonschema",
         "requests"
     ],
