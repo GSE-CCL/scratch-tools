@@ -167,7 +167,7 @@ class Scraper():
             id (int): a Scratch project ID.
 
         Returns:
-            A list of dictionaries, each with keys for author and comment.
+            A list of dictionaries, each with keys for author, comment, and timestamp.
 
         Raises:
             RuntimeError: An error occurred accessing the Scratch API, or the project doesn't exist.
@@ -187,15 +187,16 @@ class Scraper():
 
             # Use Beautiful Soup to scrape the webpage for comments
             soup = bs4.BeautifulSoup(r.content, "html.parser")
-            all_comments = soup.select(".info")
+            all_comments = soup.select(".comment")
 
             # Go through each comment and clean
             for comment in all_comments:
                 content = comment.select_one(".content").get_text().strip()
                 if content != "[deleted]":
+                    cid = int(comment["data-comment-id"])
                     user = comment.select_one(".name").get_text().strip()
                     time = comment.select_one(".time")["title"]
-                    comments.append({"username": user, "comment": content, "timestamp": time})
+                    comments.append({"id": cid, "username": user, "comment": content, "timestamp": time})
             page += 1
 
         return comments

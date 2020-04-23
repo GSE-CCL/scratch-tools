@@ -9,7 +9,7 @@ def test_get_project_comments_empty(scraper):
 
 def test_get_project_comments_full(scraper):
     result = scraper.get_project_comments(383948574)
-    partial_result = {"username": "jsarchibald", "comment": "I love this project!", "timestamp": "2020-04-22T21:17:47Z"}
+    partial_result = {"id": 133167195, "username": "jsarchibald", "comment": "I love this project!", "timestamp": "2020-04-22T21:17:47Z"}
 
     assert type(result) == list
 
