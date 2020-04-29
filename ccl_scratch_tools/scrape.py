@@ -18,12 +18,17 @@ class Scraper():
       project = scraper.download_project(555555555)
     """
 
-    def __init__(self, studio_url = None, project_url = None, project_meta_url = None, comments_url = None, user_url = None):
+    def __init__(self, studio_url = None, project_url = None, project_meta_url = None, comments_url = None, user_url = None, studio_meta_url = None):
         """Initializes scraper with studio and project URLs."""
         if studio_url is None:
             self.STUDIO_URL = "https://api.scratch.mit.edu/studios/{0}/projects?limit=40&offset={1}"
         else:
             self.STUDIO_URL = studio_url
+        
+        if studio_meta_url is None:
+            self.STUDIO_META_URL = "https://api.scratch.mit.edu/studios/{0}"
+        else:
+            self.STUDIO_META_URL = studio_meta_url
 
         if project_url is None:
             self.PROJECT_URL = "https://projects.scratch.mit.edu/{0}"
@@ -209,6 +214,7 @@ class Scraper():
 
         Returns:
             A dictionary with the entire API response from project meta API endpoint.
+                None if the studio doesn't exist.
 
         Raises:
             RuntimeError: An error occurred accessing the Scratch API.
@@ -217,14 +223,13 @@ class Scraper():
         url = self.PROJECT_META_URL.format(id)
         r = requests.get(url)
 
-        if r.status_code != 200:
+        if r.status_code != 200 and r.status_code != 404:
             raise RuntimeError("GET {0} failed with status code {1}".format(url, r.status_code))
 
-        try:
-            project = r.json()
-        except:
-            project = dict()
-            
+        project = r.json()
+        if "code" in project and project["code"] == "NotFound":
+            return None
+        
         return project
 
     def get_projects_in_studio(self, id):
@@ -258,6 +263,31 @@ class Scraper():
                 offset += 40
             
         return project_ids
+
+    def get_studio_meta(self, id):
+        """Returns the metadata for a given Scratch studio.
+        
+        Args:
+            id: An integer Scratch studio ID.
+            
+        Returns:
+            A dictionary with the studio's metadata. None if the studio doesn't exist.
+
+        Raises:
+            RuntimeError: An error occurred accessing the Scratch API.
+        """
+
+        url = self.STUDIO_META_URL.format(id)
+        r = requests.get(url)
+
+        if r.status_code != 200 and r.status_code != 404:
+            raise RuntimeError("GET {0} failed with status code {1}".format(url, r.status_code))
+
+        studio_meta = r.json()
+        if "code" in studio_meta and studio_meta["code"] == "NotFound":
+            return None
+        
+        return studio_meta
 
     def get_user_info(self, username):
         """Gets a Scratch user's publicly-available information.

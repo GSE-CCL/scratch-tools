@@ -34,7 +34,7 @@ class Parser():
         Returns:
             A dictionary mapping function names (as in this class) to their results.
 
-            If the file couldn't be opened, returns False.
+            If the data are invalid Scratch 3, returns False.
         
         Raises:
             ValueError: If neither file_name or scratch_data parameter is set.
@@ -48,7 +48,7 @@ class Parser():
                 with open(file_name) as f:
                     scratch_data = json.load(f)
 
-            if scratch_data is not None and "targets" not in scratch_data:
+            if scratch_data is not None and not self.is_scratch3(scratch_data):
                 return False
 
             results = {
@@ -76,7 +76,7 @@ class Parser():
             Returns False if doesn't exist or if trouble accessing the data.
         """
 
-        if "targets" in scratch_data:
+        if self.is_scratch3(scratch_data):
             for target in scratch_data["targets"]:
                 if block_id in target["blocks"]:
                     return target["blocks"][block_id]
@@ -220,7 +220,7 @@ class Parser():
             Returns False if data are invalid.
         """
 
-        if "targets" in scratch_data:
+        if self.is_scratch3(scratch_data):
             children = [block_id]
             for target in scratch_data["targets"]:
                 if block_id in target["blocks"]:
@@ -309,7 +309,7 @@ class Parser():
             Returns False if doesn't exist or if trouble accessing the data.
         """
 
-        if "targets" in scratch_data:
+        if self.is_scratch3(scratch_data):
             for target in scratch_data["targets"]:
                 if block_id in target["blocks"]:
                     sprite = {
@@ -343,7 +343,7 @@ class Parser():
         before = (count - 1) // 2
         after = count - 1 - before
 
-        if "targets" in scratch_data:
+        if self.is_scratch3(scratch_data):
             for target in scratch_data["targets"]:
                 if block_id in target["blocks"]:
                     children = self.get_child_blocks(block_id, scratch_data)
@@ -418,7 +418,7 @@ class Parser():
         if mode not in ["next", "parent"]:
             return False
 
-        if "targets" in scratch_data:
+        if self.is_scratch3(scratch_data):
             blocks = [block_id]
             for target in scratch_data["targets"]:
                 if block_id in target["blocks"]:

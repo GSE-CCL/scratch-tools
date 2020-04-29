@@ -2,7 +2,7 @@ import pytest
 
 def test_get_project_comments_nonexistent(scraper):
     with pytest.raises(RuntimeError):
-        scraper.get_project_meta(0)
+        scraper.get_project_comments(0)
 
 def test_get_project_comments_empty(scraper):
     assert scraper.get_project_comments(383948531) == list()
