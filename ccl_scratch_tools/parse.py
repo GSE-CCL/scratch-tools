@@ -91,8 +91,7 @@ class Parser():
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
-            comments: a dictionary mapping blocks to a list of comments associated with them.
-
+            A dictionary mapping blocks to a list of comments associated with them.
             If the input data is invalid, returns False.
         """
 
@@ -240,7 +239,7 @@ class Parser():
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
-            comments: a list of comments in the project.
+            A list of comments in the project.
 
             If the input data is invalid, returns False.
         """
@@ -261,7 +260,7 @@ class Parser():
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
-            costumes: a list of the names of the costumes used.
+            A list of the names of the costumes used.
 
             If the input data is invalid, returns False.
         """
@@ -282,7 +281,7 @@ class Parser():
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
-            costumes: a list of the names of the sounds used.
+            A list of the names of the sounds used.
 
             If the input data is invalid, returns False.
         """
@@ -375,7 +374,7 @@ class Parser():
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
 
         Returns:
-            costumes: a list of the names of the variables used.
+            A list of the names of the variables used.
 
             If the input data is invalid, returns False.
         """

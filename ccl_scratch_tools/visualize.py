@@ -10,7 +10,7 @@ class Visualizer():
 
       visualizer = Visualizer()
 
-      scratchblocks = visualizer.get_scratchblocks(scratch_data)
+      scratchblocks = visualizer.generate_scratchblocks(scratch_data)
     """
 
     def __init__(self):
@@ -23,13 +23,12 @@ class Visualizer():
         Args:
             scratch_data (dict): the Scratch project to process.
         Returns:
-            A list of scripts in the project that can be turned into text.
-                False if unsuccessful.
+            A list of scripts in the project that can be turned into text. False if unsuccessful.
         """
 
         if "targets" not in scratch_data:
             return False
-            
+
         return blocks.generate_scratchblocks(scratch_data)
 
     def generate_script(self, block_id, block_list, block_ids=None, text=False):
@@ -44,8 +43,7 @@ class Visualizer():
                 If not provided, defaults to False - it'll just return the script dictionary.
         
         Returns:
-            A dictionary with the nesting of this script as appropriate.
-                False if unsuccessful.
+            A dictionary with the nesting of this script as appropriate. False if unsuccessful.
         """
 
         script = blocks.generate_script(block_id, block_list, block_ids=None)
@@ -65,9 +63,10 @@ class Visualizer():
             scratch_data (dict): the Scratch project to search through.
 
         Returns:
-            A tuple: first, a dictionary representing the relevant target; second,
-                the index of this target in the project's target list.
-                Returns False if unsuccessful.
+            A tuple. First, a dictionary representing the relevant target;
+            second, the index of this target in the project's target list.
+            
+            Returns False if unsuccessful.
         """
         if "targets" not in scratch_data:
             return False

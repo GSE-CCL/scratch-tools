@@ -146,8 +146,7 @@ class Scraper():
             return None
 
     def get_ids_from_file(self, filename):
-        """Returns a list of IDs from a newline-separated file.
-            Project/studio link agnostic. Works with links and IDs.
+        """Returns a list of IDs from a newline-separated file. Project/studio link agnostic. Works with links and IDs.
         
         Args:
             filename: String file name of a text file with line-separated URLs or IDs.
