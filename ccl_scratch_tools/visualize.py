@@ -54,26 +54,3 @@ class Visualizer():
             return blocks.block_string([script])
         else:
             return script
-
-    def get_target(self, block_id, scratch_data):
-        """Returns the target a block is part of.
-        
-        Args:
-            block_id (str): find the target this block is part of.
-            scratch_data (dict): the Scratch project to search through.
-
-        Returns:
-            A tuple. First, a dictionary representing the relevant target;
-            second, the index of this target in the project's target list.
-            
-            Returns False if unsuccessful.
-        """
-        if "targets" not in scratch_data:
-            return False
-        
-        for i in range(len(scratch_data["targets"])):
-            target = scratch_data["targets"][i]
-            if block_id in target["blocks"]:
-                return target, i
-                
-        return False

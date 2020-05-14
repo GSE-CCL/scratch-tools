@@ -308,19 +308,19 @@ class Parser():
             Returns False if doesn't exist or if trouble accessing the data.
         """
 
-        if self.is_scratch3(scratch_data):
-            for target in scratch_data["targets"]:
-                if block_id in target["blocks"]:
-                    sprite = {
-                        "name": target["name"],
-                        "costume_asset": target["costumes"][target["currentCostume"]]["assetId"],
-                        "costume_asset_url": self.scratch_image_source
-                            .format(target["costumes"][target["currentCostume"]]["md5ext"])
-                    }
-                    return sprite
+        result = self.get_target(block_id, scratch_data)
+        if result == False:
             return False
-        else:
-            return False
+
+        target, i = result
+        sprite = {
+            "index": i,
+            "name": target["name"],
+            "costume_asset": target["costumes"][target["currentCostume"]]["assetId"],
+            "costume_asset_url": self.scratch_image_source
+                .format(target["costumes"][target["currentCostume"]]["md5ext"])
+        }
+        return sprite
 
     def get_surrounding_blocks(self, block_id, scratch_data, count=5, delve=False):
         """Gets the surrounding blocks given a block ID.
@@ -367,6 +367,29 @@ class Parser():
                         return before_blocks + after_blocks[0:after + 1]
         return False
         
+    def get_target(self, block_id, scratch_data):
+        """Returns the target a block is part of.
+        
+        Args:
+            block_id (str): find the target this block is part of.
+            scratch_data (dict): the Scratch project to search through.
+
+        Returns:
+            A tuple. First, a dictionary representing the relevant target;
+            second, the index of this target in the project's target list.
+            
+            Returns False if unsuccessful.
+        """
+        if not self.is_scratch3(scratch_data):
+            return False
+        
+        for i in range(len(scratch_data["targets"])):
+            target = scratch_data["targets"][i]
+            if block_id in target["blocks"]:
+                return target, i
+                
+        return False
+
     def get_variables(self, scratch_data):
         """Gets the variables used in a Scratch project.
         

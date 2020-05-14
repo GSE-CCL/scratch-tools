@@ -16,20 +16,20 @@ def test_generate_script_nonexistent_text(visualizer, full_sb3):
     result = visualizer.generate_script("fakeid", full_sb3["targets"][0]["blocks"], text=True)
     assert result == False
 
-def test_generate_script_exists(visualizer, full_sb3):
-    target, _ = visualizer.get_target("q3cBGj=%#c^E;eayaZs6", full_sb3)
+def test_generate_script_exists(parser, visualizer, full_sb3):
+    target, _ = parser.get_target("q3cBGj=%#c^E;eayaZs6", full_sb3)
     result = visualizer.generate_script("q3cBGj=%#c^E;eayaZs6", target["blocks"])
 
     assert result == {'label': 'play sound (Sound! v) until done'}
 
-def test_generate_script_exists_text(visualizer, full_sb3):
-    target, _ = visualizer.get_target("q3cBGj=%#c^E;eayaZs6", full_sb3)
+def test_generate_script_exists_text(parser, visualizer, full_sb3):
+    target, _ = parser.get_target("q3cBGj=%#c^E;eayaZs6", full_sb3)
     result = visualizer.generate_script("q3cBGj=%#c^E;eayaZs6", target["blocks"], text=True)
     
     assert result == "play sound (Sound! v) until done\n\n"
     
 def test_generate_script_exists_limit(parser, visualizer, full_sb3):
-    target, _ = visualizer.get_target("t0gCI_RcP^f%JiDTILyU", full_sb3)
+    target, _ = parser.get_target("t0gCI_RcP^f%JiDTILyU", full_sb3)
     surrounding = parser.get_surrounding_blocks("t0gCI_RcP^f%JiDTILyU", full_sb3)
     result = visualizer.generate_script(surrounding[0], target["blocks"], surrounding)
     
