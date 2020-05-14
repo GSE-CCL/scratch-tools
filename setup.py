@@ -15,7 +15,7 @@ setuptools.setup(
     project_urls={
         "Documentation": "https://ccl-scratch-tools.readthedocs.io/en/latest/"
     },
-    packages=setuptools.find_packages(),
+    packages=["ccl_scratch_tools", "ccl_scratch_tools.scratch_to_blocks"],
     install_requires=[
         "bs4",
         "jsonschema",
@@ -26,5 +26,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.7'
 )

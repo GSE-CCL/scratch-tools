@@ -58,6 +58,7 @@ class Parser():
                 "comments": self.get_comments(scratch_data),
                 "costumes": self.get_costumes(scratch_data),
                 "sounds": self.get_sounds(scratch_data),
+                "sprites": self.get_sprite_names(scratch_data),
                 "variables": self.get_variables(scratch_data)
             }
             return results
@@ -321,6 +322,23 @@ class Parser():
                 .format(target["costumes"][target["currentCostume"]]["md5ext"])
         }
         return sprite
+
+    def get_sprite_names(self, scratch_data):
+        """Get a list of sprite names, not including the stage targets.
+        
+        Args:
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+        Returns:
+            A list of sprite names. Stage targets are excluded. False if unsuccessful.
+        """
+        if not self.is_scratch3(scratch_data):
+            return False
+
+        sprites = list()
+        for target in scratch_data["targets"]:
+            if not target["isStage"]:
+                sprites.append(target["name"])
+        return sprites
 
     def get_surrounding_blocks(self, block_id, scratch_data, count=5, delve=False):
         """Gets the surrounding blocks given a block ID.
