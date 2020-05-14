@@ -28,6 +28,11 @@ def full_sb3():
         return dict(json.load(f))
 
 @pytest.fixture
+def user_text_sb3():
+    with open("fixtures/user_text.json") as f:
+        return dict(json.load(f))
+
+@pytest.fixture
 def project_list():
     with open("fixtures/projects.txt") as f:
         return list(f.readlines())

@@ -53,6 +53,7 @@ class Parser():
 
             results = {
                 "block_comments": self.get_block_comments(scratch_data),
+                "block_text": self.get_block_text(scratch_data),
                 "blocks": self.get_blocks(scratch_data),
                 "categories": self.get_categories(scratch_data),
                 "comments": self.get_comments(scratch_data),
@@ -156,6 +157,40 @@ class Parser():
                     names.append(self.get_block_name(block["opcode"]))
 
         return names
+
+    def get_block_text(self, scratch_data):
+        """Gets the user-added block text, e.g. in Say blocks.
+        
+        Args:
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+                Include this only if items is a list of block IDs.
+        Returns:
+            A list containing the user-added block text, one element per text item.
+                False if unsuccessful.
+        """
+
+        # Get the blocks ordered by opcode
+        blocks = self.get_blocks(scratch_data)
+
+        if not blocks:
+            return False
+
+        # The opcodes that support this type of text
+        opcodes = {"looks_sayforsecs": "MESSAGE",
+                   "looks_say": "MESSAGE",
+                   "looks_thinkforsecs": "MESSAGE",
+                   "looks_think": "MESSAGE",
+                   "sensing_askandwait": "QUESTION"}
+        
+        # Loop through possible opcodes, adding to the list of text
+        texts = list()
+        for opcode in opcodes:
+            if opcode in blocks:
+                for block in blocks[opcode]:
+                    target, i = self.get_target(block, scratch_data)
+                    texts.append(target["blocks"][block]["inputs"][opcodes[opcode]][1][1])
+
+        return texts
 
     def get_blocks(self, scratch_data):
         """Gets the blocks used in a Scratch project.
