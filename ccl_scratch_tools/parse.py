@@ -16,7 +16,7 @@ class Parser():
     """
 
     def __init__(self):
-        """Initializes parser with studio and project URLs."""
+        """Initializes parser."""
 
         self.block_data = blocks.blocks
         self.block_ignore = blocks.ignore

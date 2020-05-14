@@ -5,7 +5,7 @@ import sys
 
 # Use this when testing the local copy:
 #sys.path.insert(0, os.path.abspath('../'))
-from ccl_scratch_tools import Parser, Scraper
+from ccl_scratch_tools import Parser, Scraper, Visualizer
 
 
 @pytest.fixture
@@ -51,3 +51,7 @@ def test_studio():
         p_to_s[project] = 26211962
 
     return projects, p_to_s
+
+@pytest.fixture
+def visualizer():
+    return Visualizer()

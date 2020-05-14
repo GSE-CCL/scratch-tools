@@ -1,0 +1,3 @@
+[submodule "ccl_scratch_tools/scratch_to_blocks"]
+	path = ccl_scratch_tools/scratch_to_blocks
+	url = https://github.com/GSE-CCL/scratch-to-blocks
