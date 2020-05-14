@@ -166,7 +166,8 @@ class Parser():
                 Include this only if items is a list of block IDs.
         Returns:
             A list containing the user-added block text, one element per text item.
-                False if unsuccessful.
+            
+            False if unsuccessful.
         """
 
         # Get the blocks ordered by opcode
