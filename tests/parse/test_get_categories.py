@@ -16,7 +16,7 @@ def test_get_categories_empty(parser, empty_sb3):
         "operators": 0,
         "sensing": 0,
         "sound": 0,
-        "more_blocks": 0,
+        "procedures": 0,
         "data": 0
     }
 
@@ -32,6 +32,6 @@ def test_get_categories_full(parser, full_sb3):
         "operators": 2,
         "sensing": 2,
         "sound": 2,
-        "more_blocks": 2,
+        "procedures": 2,
         "data": 2
     }
