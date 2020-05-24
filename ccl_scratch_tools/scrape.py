@@ -192,6 +192,8 @@ class Scraper():
             # Use Beautiful Soup to scrape the webpage for comments
             soup = bs4.BeautifulSoup(r.content, "html.parser")
             all_comments = soup.select(".comment")
+            if len(all_comments) < 1:
+                break
 
             # Go through each comment and clean
             for comment in all_comments:
