@@ -14,32 +14,32 @@ def parser():
 
 @pytest.fixture
 def small_sb2():
-    with open("fixtures/sb2.json") as f:
+    with open("tests/fixtures/sb2.json") as f:
         return dict(json.load(f))
 
 @pytest.fixture
 def empty_sb3():
-    with open("fixtures/empty.json") as f:
+    with open("tests/fixtures/empty.json") as f:
         return dict(json.load(f))
 
 @pytest.fixture
 def full_sb3():
-    with open("fixtures/full.json") as f:
+    with open("tests/fixtures/full.json") as f:
         return dict(json.load(f))
 
 @pytest.fixture
 def user_text_sb3():
-    with open("fixtures/user_text.json") as f:
+    with open("tests/fixtures/user_text.json") as f:
         return dict(json.load(f))
 
 @pytest.fixture
 def project_list():
-    with open("fixtures/projects.txt") as f:
+    with open("tests/fixtures/projects.txt") as f:
         return list(f.readlines())
 
 @pytest.fixture
 def studio_list():
-    with open("fixtures/studios.txt") as f:
+    with open("tests/fixtures/studios.txt") as f:
         return list(f.readlines())
 
 @pytest.fixture

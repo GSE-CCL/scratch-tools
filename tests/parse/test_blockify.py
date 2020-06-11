@@ -5,16 +5,16 @@ def test_blockify_noargs(parser):
         parser.blockify()
 
 def test_blockify_f_nonexistent(parser):
-    result = parser.blockify(file_name="fixtures/nonexistent.json")
+    result = parser.blockify(file_name="tests/fixtures/nonexistent.json")
     assert result == False
 
 def test_blockify_f_empty(parser):
-    result = parser.blockify(file_name="fixtures/empty.json")
+    result = parser.blockify(file_name="tests/fixtures/empty.json")
     assert type(result) == dict
     assert len(result) == 9
 
 def test_blockify_f_full(parser):
-    result = parser.blockify(file_name="fixtures/full.json")
+    result = parser.blockify(file_name="tests/fixtures/full.json")
     assert type(result) == dict
     assert len(result) == 9
 
