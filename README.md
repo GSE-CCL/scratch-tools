@@ -1,3 +1,4 @@
+[![Documentation Status](https://readthedocs.org/projects/ccl-scratch-tools/badge/?version=latest)](https://ccl-scratch-tools.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.org/GSE-CCL/scratch-tools.svg?branch=master)](https://travis-ci.org/GSE-CCL/scratch-tools)
 
 # Scratch Tools
