@@ -1,20 +1,14 @@
 language: python
 dist: xenial
-python:
-- '3.7'
-- '3.8'
+python: 3.7
 install:
 - pip install -r requirements.txt
 script:
 - python3 -m pytest tests
-
-jobs:
-  include:
-    - stage: deploy
-        deploy:
-          provider: pypi
-          username: __token__
-          password:
-            secure: BNNP+coQF8/ekF/eWEgTPMbooEGDMbpc7OUHE2LIHauEz9GiIdX7GvKAHi+OUss8UMLXNZX+qeEu5fxZTcXV+E5y9TMRHB3mvSILGvwU85i85EbWCXL76qQY1qC+4dUG/xpuj7cMh8l+FBa96RqvjUPEefsZVb+Lv1J6VyJrBfOfWWNKhcsxZqHyErGWxyZt3NmxCQz1K7nZyXAKH8An19bOTUhjNuF5cgGusarCaLe/wq3BcejfGhM5u1OOrnP9WQnnNTsMvEt/AQ6BCQTv9kKaSWAE+5j0QoM2LXFtAZ1ICA6DK0ZX2nLoiUS1RI3uK8tNvO0nsqQ3F1O42ATq0DxzHGBH5SlB4yHaj1wdPEJgN3eIdV2wa0MClYgv/A05JYnUUT4/XNtpp6fPUTxutrPqXN6icd84wo6IcAtlebOfq/twkQ2HxauFFLz7NoJCC2qMA8cvazzeRikMLapLYiKxAcTCUdDj+JpkQE9agpFBTL56WwM8DOpRj0iDmJzJ/Ez3KiEmQA0TS/3DWFtPmVNu6woSW+W+3hWN4hk6WS/OgM3BsT//4H/rEhdMj8hHq+D+WV0bBHBNdvzEAAZ3xdyC2hPyP74HI8nqt9HpC6OG3as12z6EjZUlRvdFSHgkgJbIK+W8O63Khms4mUuiREklvMeTBxL8bHO9bQBRe74=
-          on:
-            repo: GSE-CCL/scratch-tools
+deploy:
+  provider: pypi
+  username: __token__
+  password:
+    secure: BNNP+coQF8/ekF/eWEgTPMbooEGDMbpc7OUHE2LIHauEz9GiIdX7GvKAHi+OUss8UMLXNZX+qeEu5fxZTcXV+E5y9TMRHB3mvSILGvwU85i85EbWCXL76qQY1qC+4dUG/xpuj7cMh8l+FBa96RqvjUPEefsZVb+Lv1J6VyJrBfOfWWNKhcsxZqHyErGWxyZt3NmxCQz1K7nZyXAKH8An19bOTUhjNuF5cgGusarCaLe/wq3BcejfGhM5u1OOrnP9WQnnNTsMvEt/AQ6BCQTv9kKaSWAE+5j0QoM2LXFtAZ1ICA6DK0ZX2nLoiUS1RI3uK8tNvO0nsqQ3F1O42ATq0DxzHGBH5SlB4yHaj1wdPEJgN3eIdV2wa0MClYgv/A05JYnUUT4/XNtpp6fPUTxutrPqXN6icd84wo6IcAtlebOfq/twkQ2HxauFFLz7NoJCC2qMA8cvazzeRikMLapLYiKxAcTCUdDj+JpkQE9agpFBTL56WwM8DOpRj0iDmJzJ/Ez3KiEmQA0TS/3DWFtPmVNu6woSW+W+3hWN4hk6WS/OgM3BsT//4H/rEhdMj8hHq+D+WV0bBHBNdvzEAAZ3xdyC2hPyP74HI8nqt9HpC6OG3as12z6EjZUlRvdFSHgkgJbIK+W8O63Khms4mUuiREklvMeTBxL8bHO9bQBRe74=
+  on:
+    repo: GSE-CCL/scratch-tools
