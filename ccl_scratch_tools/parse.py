@@ -165,7 +165,7 @@ class Parser():
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
                 Include this only if items is a list of block IDs.
         Returns:
-            A list containing the user-added block text, one element per text item.
+            A dictionary mapping the user-added block text to a list of block IDs of blocks where it appears.
             
             False if unsuccessful.
         """
@@ -173,7 +173,7 @@ class Parser():
         # Get the blocks ordered by opcode
         blocks = self.get_blocks(scratch_data)
 
-        if not blocks:
+        if blocks == False:
             return False
 
         # The opcodes that support this type of text
@@ -184,12 +184,16 @@ class Parser():
                    "sensing_askandwait": "QUESTION"}
         
         # Loop through possible opcodes, adding to the list of text
-        texts = list()
+        texts = dict()
         for opcode in opcodes:
             if opcode in blocks:
                 for block in blocks[opcode]:
                     target, i = self.get_target(block, scratch_data)
-                    texts.append(target["blocks"][block]["inputs"][opcodes[opcode]][1][1])
+                    text = target["blocks"][block]["inputs"][opcodes[opcode]][1][1]
+                    if text in texts:
+                        texts[text].append(block)
+                    else:
+                        texts[text] = [block]
 
         return texts
 

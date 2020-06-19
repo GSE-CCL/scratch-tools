@@ -215,7 +215,7 @@ class Scraper():
 
         Returns:
             A dictionary with the entire API response from project meta API endpoint.
-                None if the studio doesn't exist.
+            None if the studio doesn't exist.
 
         Raises:
             RuntimeError: An error occurred accessing the Scratch API.

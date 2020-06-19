@@ -33,6 +33,11 @@ def user_text_sb3():
         return dict(json.load(f))
 
 @pytest.fixture
+def user_text_repeat_sb3():
+    with open("tests/fixtures/user_text_repeat.json") as f:
+        return dict(json.load(f))
+
+@pytest.fixture
 def project_list():
     with open("tests/fixtures/projects.txt") as f:
         return list(f.readlines())
