@@ -60,6 +60,7 @@ class Parser():
                 "categories": self.get_categories(scratch_data),
                 "comments": self.get_comments(scratch_data),
                 "costumes": self.get_costumes(scratch_data),
+                "orphan_blocks": self.get_orphan_blocks(scratch_data),
                 "sounds": self.get_sounds(scratch_data),
                 "sprites": self.get_sprite_names(scratch_data),
                 "variables": self.get_variables(scratch_data)
