@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from ccl_scratch_tools.scratch_to_blocks import blocks
 
+
 class Visualizer():
     """A way to visualize blocks by exporting to Scratchblocks syntax.
 
@@ -17,6 +18,7 @@ class Visualizer():
         """Initializes visualizer."""
         return
 
+
     def generate_scratchblocks(self, scratch_data):
         """Generates all blocks in a project.
     
@@ -31,7 +33,8 @@ class Visualizer():
 
         return blocks.generate_scratchblocks(scratch_data)
 
-    def generate_script(self, block_id, block_list, block_ids=None, text=False):
+
+    def generate_script(self, block_id, block_list, block_ids=None, text=False, find_block=True):
         """Generates a script dictionary, nesting the blocks as appropriate.
         
         Args:
@@ -41,12 +44,15 @@ class Visualizer():
                 If not provided, then all blocks are allowed.
             text (boolean) (optonal): whether to return this in Scratchblocks text syntax.
                 If not provided, defaults to False - it'll just return the script dictionary.
+            find_block (bool) (optional): whether to find the closest parent block
+                that can form a script, as when a script uses input blocks.
+                Defaults to True.
         
         Returns:
             A dictionary with the nesting of this script as appropriate. False if unsuccessful.
         """
 
-        script = blocks.generate_script(block_id, block_list, block_ids=None)
+        script = blocks.generate_script(block_id, block_list, block_ids=None, find_block=find_block)
         if script is None or script == False:
             return False
         

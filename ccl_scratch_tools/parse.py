@@ -3,6 +3,7 @@ from . import blocks, sb3_schema
 import json
 from jsonschema import Draft7Validator
 
+
 class Parser():
     """A parser with which to parse Scratch projects.
 
@@ -23,6 +24,7 @@ class Parser():
         self.event_listeners = blocks.event_listeners
         self.scratch_image_source = "https://assets.scratch.mit.edu/internalapi/asset/{0}/get/"
         self.sb3_schema = sb3_schema.sb3_schema
+
 
     def blockify(self, file_name=None, scratch_data=None):
         """Gets the statistics about a Scratch project.
@@ -66,6 +68,7 @@ class Parser():
         except:
             return False
 
+
     def get_block(self, block_id, scratch_data):
         """Returns the block object in the Scratch object given block ID.
         
@@ -85,6 +88,7 @@ class Parser():
             return False
         else:
             return False
+
 
     def get_block_comments(self, scratch_data):
         """Gets the comments left in a Scratch project, organized by block.
@@ -113,6 +117,7 @@ class Parser():
         except:
             return False
 
+
     def get_block_name(self, opcode):
         """Gets the human-readable name of a Scratch block.
         
@@ -128,6 +133,7 @@ class Parser():
         for category in self.block_data:
             if opcode in self.block_data[category]:
                 return self.block_data[category][opcode]
+
 
     def get_block_names(self, items, scratch_data=None):
         """Gets the human-readable name of a list of Scratch blocks.
@@ -157,6 +163,7 @@ class Parser():
                     names.append(self.get_block_name(block["opcode"]))
 
         return names
+
 
     def get_block_text(self, scratch_data):
         """Gets the user-added block text, e.g. in Say blocks.
@@ -197,6 +204,7 @@ class Parser():
 
         return texts
 
+
     def get_blocks(self, scratch_data):
         """Gets the blocks used in a Scratch project.
         
@@ -223,6 +231,7 @@ class Parser():
         except:
             return False
 
+
     def get_categories(self, scratch_data):
         """Gets the categories of blocks used in a Scratch project.
         
@@ -246,6 +255,7 @@ class Parser():
             return categories
         except:
             return False
+
 
     def get_child_blocks(self, block_id, scratch_data):
         """Gets the child blocks of a given block.
@@ -273,6 +283,7 @@ class Parser():
             return children
         return False
 
+
     def get_comments(self, scratch_data):
         """Gets the comments left in a Scratch project.
         
@@ -293,6 +304,7 @@ class Parser():
             return comments
         except:
             return False
+
 
     def get_costumes(self, scratch_data):
         """Gets the costumes used in a Scratch project.
@@ -315,6 +327,7 @@ class Parser():
         except:
             return False
 
+
     def get_sounds(self, scratch_data):
         """Gets the sounds used in a Scratch project.
         
@@ -335,6 +348,7 @@ class Parser():
             return sounds
         except:
             return False
+
 
     def get_sprite(self, block_id, scratch_data):
         """Gets the sprite with which a block is associated.
@@ -363,6 +377,7 @@ class Parser():
         }
         return sprite
 
+
     def get_sprite_names(self, scratch_data):
         """Get a list of sprite names, not including the stage targets.
         
@@ -379,6 +394,7 @@ class Parser():
             if not target["isStage"]:
                 sprites.append(target["name"])
         return sprites
+
 
     def get_surrounding_blocks(self, block_id, scratch_data, count=5, delve=False):
         """Gets the surrounding blocks given a block ID.
@@ -408,6 +424,7 @@ class Parser():
                     # If we just want children and we have children
                     if delve and len(children) > 1:
                         return children[0:count]
+
                     # If we don't want just children but we do have children
                     elif not delve and len(children) > 1:
                         before_blocks = self.loop_through_blocks(block_id, scratch_data, mode="parent")
@@ -415,6 +432,7 @@ class Parser():
                         before_blocks.reverse()
 
                         return before_blocks + children[0:after + 1]
+                        
                     # If we don't have children
                     else:
                         before_blocks = self.loop_through_blocks(block_id, scratch_data, mode="parent")
@@ -425,6 +443,7 @@ class Parser():
                         return before_blocks + after_blocks[0:after + 1]
         return False
         
+
     def get_target(self, block_id, scratch_data):
         """Returns the target a block is part of.
         
@@ -448,6 +467,7 @@ class Parser():
                 
         return False
 
+
     def get_variables(self, scratch_data):
         """Gets the variables used in a Scratch project.
         
@@ -469,6 +489,7 @@ class Parser():
         except:
             return False
 
+
     def is_scratch3(self, scratch_data):
         """Checks a supposed Scratch data file against the Scratch 3 schema.
         
@@ -480,6 +501,7 @@ class Parser():
         """
 
         return Draft7Validator(self.sb3_schema).is_valid(scratch_data)
+
 
     def loop_through_blocks(self, block_id, scratch_data, mode="next"):
         """Loops through blocks in forward or backward direction.

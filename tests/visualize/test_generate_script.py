@@ -34,3 +34,19 @@ def test_generate_script_exists_limit(parser, visualizer, full_sb3):
     result = visualizer.generate_script(surrounding[0], target["blocks"], surrounding)
     
     assert result == {'label': 'define test_function', 'next': {'label': 'ask [Question] and wait', 'next': {'label': 'if <(answer) > [50]> then', 'substack': {'label': 'set [test_variable v] to (pick random (1) to (10))', 'next': {'label': 'play sound (Sound! v) until done'}}}}}
+
+def test_generate_script_starts_with_input(parser, visualizer, full_sb3):
+    """Should fail since we are forcing scratch-to-blocks to use an INPUT to start."""
+
+    target, _ = parser.get_target("LFsgr8N^R^kVy-c66YJ8", full_sb3)
+
+    with pytest.raises(Exception):
+        surrounding = parser.get_surrounding_blocks("LFsgr8N^R^kVy-c66YJ8", full_sb3, 2)
+        result = visualizer.generate_script(surrounding[0], target["blocks"], surrounding, find_block=False)
+
+def test_generate_script_nostart_with_input(parser, visualizer, full_sb3):
+    """Should succeed since we're letting scratch-to-blocks find the closest BLOCK it can."""
+
+    target, _ = parser.get_target("LFsgr8N^R^kVy-c66YJ8", full_sb3)
+    surrounding = parser.get_surrounding_blocks("LFsgr8N^R^kVy-c66YJ8", full_sb3, 2)
+    result = visualizer.generate_script(surrounding[0], target["blocks"], surrounding)

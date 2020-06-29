@@ -6,6 +6,7 @@ import os
 import requests
 import zipfile
 
+
 class Scraper():
     """A scraper with which to scrape Scratch projects.
 
@@ -50,6 +51,7 @@ class Scraper():
         else:
             self.USER_URL = user_url
 
+
     def download_project(self, id):
         """Downloads an individual project JSON and returns it as a Python object.
         
@@ -84,6 +86,7 @@ class Scraper():
                 except:
                     raise RuntimeError("Cannot handle format of project {0}".format(id))
         return project
+
 
     def download_projects(self, ids, projects_to_studio=dict(), output_directory=None, file_name=None):
         """Given project IDs, download the JSON files.
@@ -127,6 +130,7 @@ class Scraper():
             with open("{0}/{1}".format(output_directory, file_name), "w") as f:
                 json.dump(projects, f)
 
+
     def get_id(self, url):
         """Returns the integer ID from a string that may be a URL or an ID.
         
@@ -144,6 +148,7 @@ class Scraper():
             return int(a.split("/")[-1])
         except:
             return None
+
 
     def get_ids_from_file(self, filename):
         """Returns a list of IDs from a newline-separated file. Project/studio link agnostic. Works with links and IDs.
@@ -163,6 +168,7 @@ class Scraper():
         except:
             pass
         return ids
+
 
     def get_project_comments(self, id):
         """Returns the comments on a given Scratch project.
@@ -207,6 +213,7 @@ class Scraper():
 
         return comments
 
+
     def get_project_meta(self, id):
         """Returns the publicly-available metadata about a given Scratch project.
         
@@ -232,6 +239,7 @@ class Scraper():
             return None
         
         return project
+
 
     def get_projects_in_studio(self, id):
         """Returns the set of project IDs contained in a given Scratch studio.
@@ -265,6 +273,7 @@ class Scraper():
             
         return project_ids
 
+
     def get_studio_meta(self, id):
         """Returns the metadata for a given Scratch studio.
         
@@ -290,6 +299,7 @@ class Scraper():
         
         return studio_meta
 
+
     def get_user_info(self, username):
         """Gets a Scratch user's publicly-available information.
         
@@ -311,6 +321,7 @@ class Scraper():
 
         return r.json()
     
+
     def make_dir(self, path):
         """Creates a directory given path.
         
