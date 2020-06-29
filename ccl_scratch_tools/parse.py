@@ -351,8 +351,8 @@ class Parser():
                     block = target["blocks"][block_id]
 
                     # Two types of orphans: non-listeners with no parents, and listeners with no children
-                    if ((block["parent"] is None and block["opcode"] not in self.event_listeners)
-                        or (block["next"] is None and block["opcode"] in self.event_listeners)):
+                    if ((("parent" not in block or block["parent"] is None) and block["opcode"] not in self.event_listeners)
+                        or (("parent" not in block or block["next"] is None) and block["opcode"] in self.event_listeners)):
                         orphans.add(block_id)
         except:
             return False
