@@ -38,3 +38,13 @@ def test_get_blocks_full(parser, full_sb3):
     }
     for block in result:
         assert len(result[block]) == lengths[block]
+
+def test_get_blocks_no_orphans(parser, orphans_sb3):
+    result = parser.get_blocks(orphans_sb3, False)
+    assert type(result) == dict
+    assert len(result) == 2
+
+def test_get_blocks_orphans(parser, orphans_sb3):
+    result = parser.get_blocks(orphans_sb3)
+    assert type(result) == dict
+    assert len(result) == 6

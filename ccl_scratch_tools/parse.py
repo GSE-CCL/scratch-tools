@@ -205,11 +205,12 @@ class Parser():
         return texts
 
 
-    def get_blocks(self, scratch_data):
+    def get_blocks(self, scratch_data, include_orphans=True):
         """Gets the blocks used in a Scratch project.
         
         Args:
             scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+            include_orphans (bool) (optional): whether to include orphan blocks. Defaults to True.
 
         Returns:
             A dictionary mapping used block opcodes to a list of block IDs
@@ -219,11 +220,13 @@ class Parser():
         """
 
         try:
+            orphans = set() if include_orphans else self.get_orphan_blocks(scratch_data)
+
             blocks = dict()
             for target in scratch_data["targets"]:
                 for block_id in target["blocks"]:
                     block = target["blocks"][block_id]
-                    if block["opcode"] not in self.block_ignore:
+                    if block["opcode"] not in self.block_ignore and block_id not in orphans:
                         if block["opcode"] not in blocks:
                             blocks[block["opcode"]] = list()
                         blocks[block["opcode"]].append(block_id)
@@ -277,6 +280,7 @@ class Parser():
                     # If this is a block that can have substacks, like loops or conditions
                     if "SUBSTACK" in target["blocks"][block_id]["inputs"]:
                         children += self.loop_through_blocks(target["blocks"][block_id]["inputs"]["SUBSTACK"][1], scratch_data)
+
                     # If this is a block that doesn't have substacks but functionally operates like it does
                     elif target["blocks"][block_id]["opcode"] in self.event_listeners:
                         children += self.loop_through_blocks(target["blocks"][block_id]["next"], scratch_data)
@@ -326,6 +330,33 @@ class Parser():
             return costumes
         except:
             return False
+
+        
+    def get_orphan_blocks(self, scratch_data):
+        """Gets all the orphan blocks in a Scratch project. An orphan block is defined
+            as an event listener with no children, or a non-event listener with no parents.
+        
+        Args:
+            scratch_data (dict): a Python dictionary representing the imported Scratch JSON.
+
+        Returns:
+            A set of the block IDs that are orphan blocks. False if invalid data.
+        """
+
+        orphans = set()
+        try:
+            for target in scratch_data["targets"]:
+                for block_id in target["blocks"]:
+                    block = target["blocks"][block_id]
+
+                    # Two types of orphans: non-listeners with no parents, and listeners with no children
+                    if ((block["parent"] is None and block["opcode"] not in self.event_listeners)
+                        or (block["next"] is None and block["opcode"] in self.event_listeners)):
+                        orphans.add(block_id)
+        except:
+            return False
+        
+        return orphans
 
 
     def get_sounds(self, scratch_data):

@@ -23,5 +23,6 @@ event_listeners = {
     "event_whenthisspriteclicked": "When Sprite Clicked",
     "event_whenbackdropswitchesto": "When Backdrop Switches To",
     "event_whengreaterthan": "When Greater Than",
-    "event_whenbroadcastreceived": "When Broadcast Received"
+    "event_whenbroadcastreceived": "When Broadcast Received",
+    "control_start_as_clone": "When I start as a clone"
 }
