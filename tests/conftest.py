@@ -28,6 +28,11 @@ def full_sb3():
         return dict(json.load(f))
 
 @pytest.fixture
+def orphans_sb3():
+    with open("tests/fixtures/orphans.json") as f:
+        return dict(json.load(f))
+
+@pytest.fixture
 def user_text_sb3():
     with open("tests/fixtures/user_text.json") as f:
         return dict(json.load(f))
