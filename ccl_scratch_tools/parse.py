@@ -400,12 +400,17 @@ class Parser():
             return False
 
         target, i = result
+
+        if "md5ext" in target["costumes"][target["currentCostume"]]:
+            url = self.scratch_image_source.format(target["costumes"][target["currentCostume"]]["md5ext"])
+        else:
+            url = None
+
         sprite = {
             "index": i,
             "name": target["name"],
             "costume_asset": target["costumes"][target["currentCostume"]]["assetId"],
-            "costume_asset_url": self.scratch_image_source
-                .format(target["costumes"][target["currentCostume"]]["md5ext"])
+            "costume_asset_url": url
         }
         return sprite
 
