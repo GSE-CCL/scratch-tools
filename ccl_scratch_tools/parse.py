@@ -227,6 +227,11 @@ class Parser():
             for target in scratch_data["targets"]:
                 for block_id in target["blocks"]:
                     block = target["blocks"][block_id]
+
+                    # Handle weird cases
+                    if type(block) == list or "opcode" not in block:
+                        continue
+
                     if block["opcode"] not in self.block_ignore and block_id not in orphans:
                         if block["opcode"] not in blocks:
                             blocks[block["opcode"]] = list()
