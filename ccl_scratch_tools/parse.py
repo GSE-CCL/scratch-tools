@@ -365,6 +365,10 @@ class Parser():
                 for block_id in target["blocks"]:
                     block = target["blocks"][block_id]
 
+                    # Handle weird cases
+                    if type(block) == list or "opcode" not in block:
+                        continue
+
                     # Two types of orphans: non-listeners with no parents, and listeners with no children
                     if ((("parent" not in block or block["parent"] is None) and block["opcode"] not in self.event_listeners)
                         or (("parent" not in block or block["next"] is None) and block["opcode"] in self.event_listeners)):
