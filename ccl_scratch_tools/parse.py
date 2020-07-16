@@ -363,10 +363,6 @@ class Parser():
         try:
             for target in scratch_data["targets"]:
                 for block_id in target["blocks"]:
-                    # Handle weird cases
-                    if type(block) == list or "opcode" not in block:
-                        continue
-
                     block = target["blocks"][block_id]
 
                     # Two types of orphans: non-listeners with no parents, and listeners with no children
