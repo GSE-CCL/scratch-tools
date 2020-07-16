@@ -109,6 +109,11 @@ class Parser():
                     # Loop through blocks to see which comments go where
                     for block in target["blocks"]:
                         block = target["blocks"][block]
+
+                        # Handle weird cases
+                        if type(block) == list or "opcode" not in block:
+                            continue
+
                         if "comment" in block and len(block["comment"]) > 0:
                             if block["opcode"] not in comments:
                                 comments[block["opcode"]] = list()
@@ -262,7 +267,7 @@ class Parser():
                     # Handle weird cases
                     if type(block) == list or "opcode" not in block:
                         continue
-                    
+
                     for category in self.block_data:
                         if block["opcode"] in self.block_data[category]:
                             categories[category] += 1
@@ -358,6 +363,10 @@ class Parser():
         try:
             for target in scratch_data["targets"]:
                 for block_id in target["blocks"]:
+                    # Handle weird cases
+                    if type(block) == list or "opcode" not in block:
+                        continue
+
                     block = target["blocks"][block_id]
 
                     # Two types of orphans: non-listeners with no parents, and listeners with no children
